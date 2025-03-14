@@ -1,11 +1,13 @@
-// Importar las escenas
+
 import Presentacion from './scenes/Presentacion.js';
 import MenuPrincipal from './scenes/MenuPrincipal.js';
-import CapturaAlias from './scenes/CapturaAlias.js';
-import ElegirPersonaje from './scenes/ElegirPersonaje.js';
+import CapturaAlias from './scenes/CapturaAlias.js';  // Importa esta escena
+import ElegirPersonaje from './scenes/ElegirPersonaje.js';  // Importa esta escena
 import Nivel1 from './scenes/Nivel1.js';
+import Nivel2 from './scenes/Nivel2.js';
 import GameOver from './scenes/GameOver.js';
 import Felicitaciones from './scenes/Felicitaciones.js';
+
 
 // Configuración del juego
 const config = {
