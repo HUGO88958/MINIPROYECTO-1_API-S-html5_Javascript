@@ -6,6 +6,7 @@ import ElegirPersonaje from './scenes/ElegirPersonaje.js';
 import Nivel1 from './scenes/Nivel1.js';
 import GameOver from './scenes/GameOver.js';
 import Felicitaciones from './scenes/Felicitaciones.js';
+import Instrucciones from './scenes/Instrucciones.js';
 
 // Configuración del juego
 const config = {
@@ -26,7 +27,8 @@ const config = {
         ElegirPersonaje,
         Nivel1,
         GameOver,
-        Felicitaciones
+        Felicitaciones,
+        Instrucciones
     ]
 };
 
