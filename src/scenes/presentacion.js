@@ -1,21 +1,16 @@
-export default class Presentacion extends Phaser.Scene {
+export default class PresentationScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'Presentacion' });
+        super({ key: 'PresentationScene' });
     }
 
     preload() {
-        this.load.image('logo', '../assets/logo.png');
+        // Cargar assets aquí
+       this.load.image('logo', 'assets/logo.png');
     }
 
     create() {
-        this.add.image(400, 300, 'logo');
-        this.add.text(400, 500, 'Nombre del Juego', {
-            fontSize: '48px',
-            fill: '#fff'
-        }).setOrigin(0.5);
-
-        this.time.delayedCall(3000, () => {
-            this.scene.start('MenuPrincipal');
-        });
+        // Configurar la escena aquí
+        this.add.text(100, 100, 'presentación', { fontSize: '32px', fill: '#fff' });
+        this.add.image(400, 300, 'logo'); // Ejemplo de mostrar una imagen
     }
 }
