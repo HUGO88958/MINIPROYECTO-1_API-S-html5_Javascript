@@ -5,8 +5,8 @@ export default class Nivel1 extends Phaser.Scene {
 
     // Precarga de recursos
     preload() {
-        this.load.image('fondo', 'assets/fondos/fondo1.png'); // Fondo del nivel 1
-        this.load.image('plataforma', 'assets/recursos/platform.png'); // Plataformas
+        this.load.image('fondo', 'assets/fondos/fondo2.png'); // Fondo del nivel 1
+        this.load.image('plataforma', 'assets/recursos/platforma.png'); // Plataformas
         this.load.image('recurso', 'assets/star.png'); // Recursos (estrellas)
         this.load.image('bomba', 'assets/bomb.png'); // Bombas (enemigos)
         this.load.spritesheet('personaje', 'assets/personaje2_spriteshet.png', {

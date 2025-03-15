@@ -4,18 +4,33 @@ export default class Presentacion extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('logo', 'assets/recursos/logo.png');
+        this.load.image('logo', 'assets/recursos/fondo_inicio.jpg');
+        this.load.image('boton', 'assets/recursos/boton_inicio.png');
     }
 
     create() {
-        this.add.image(400, 300, 'logo');
-        this.add.text(400, 500, 'Nombre del Juego', {
-            fontSize: '48px',
+        // Ajustar el fondo al tamaño de la ventana
+        const fondo = this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo');
+        fondo.setDisplaySize(this.scale.width, this.scale.height); // Ajustar tamaño
+
+        // Título centrado
+        this.add.text(this.scale.width / 2, this.scale.height * 0.7, 'Rostar', {
+            fontSize: '64px',
             fill: '#fff'
         }).setOrigin(0.5);
 
-        this.time.delayedCall(3000, () => {
+        // Crear botón
+        const boton = this.add.image(this.scale.width / 2, this.scale.height * 0.8, 'boton')
+            .setInteractive()
+            .setScale(0.4); // Escalar el botón
+
+        // Evento para cambiar de escena
+        boton.on('pointerdown', () => {
             this.scene.start('MenuPrincipal');
         });
+
+        // Efectos al pasar el mouse
+        boton.on('pointerover', () => boton.setAlpha(0.7));
+        boton.on('pointerout', () => boton.setAlpha(1));
     }
 }
