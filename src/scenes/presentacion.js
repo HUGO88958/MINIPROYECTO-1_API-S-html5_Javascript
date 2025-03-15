@@ -1,11 +1,11 @@
-export default class PresentationScene extends Phaser.Scene {
+export default class Presentacion extends Phaser.Scene {
     constructor() {
-        super({ key: 'PresentationScene' });
+        super({ key: 'Presentacion' });
     }
 
     preload() {
         // Cargar assets aquí
-       this.load.image('logo', 'assets/logo.png');
+       this.load.image('logo', 'assets/recursos/logo.png');
     }
 
     create() {

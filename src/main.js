@@ -1,10 +1,10 @@
-import PresentationScene from './scenes/Presentacion.js';
+import Presentacion from './scenes/Presentacion.js';
 
 const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    scene: [PresentationScene],
+    scene: [Presentacion],
     // Otras configuraciones de Phaser
 };
 
