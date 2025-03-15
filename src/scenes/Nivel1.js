@@ -6,7 +6,7 @@ export default class Nivel1 extends Phaser.Scene {
     // Precarga de recursos
     preload() {
         this.load.image('fondo', 'assets/fondos/fondo1.png'); // Fondo del nivel 1
-        //this.load.image('plataforma', 'assets/recursos/plataforma.png'); // Plataformas - fixed missing asset
+        this.load.image('plataforma', 'assets/recursos/plataforma.png'); // Plataformas - fixed missing asset
         this.load.image('estrella', 'assets/recursos/star.png'); // Recursos (estrellas)
         this.load.image('bomba', 'assets/recursos/meteorito.png'); // Bombas (enemigos)
         this.load.spritesheet('personaje', 'assets/personajes/spritep2.png', {
@@ -21,6 +21,7 @@ export default class Nivel1 extends Phaser.Scene {
         this.vidas = 3; // Inicializar vidas
         this.puntuacion = 0; // Inicializar puntuación
         this.gameOver = false; // Flag for game over state
+        
 
         // Mostrar fondo
         const fondo = this.add.image(400, 300, 'fondo');
@@ -28,13 +29,17 @@ export default class Nivel1 extends Phaser.Scene {
 
         // Crear plataformas
         this.plataformas = this.physics.add.staticGroup();
-        this.plataformas.create(400, 568, 'plataforma').setScale(2).refreshBody();
+        this.plataformas.create(700, 600, 'plataforma').setScale(1).refreshBody();
+        this.plataformas.create(500, 600, 'plataforma').setScale(1).refreshBody();
+        this.plataformas.create(300, 600, 'plataforma').setScale(1).refreshBody();
+        this.plataformas.create(100, 600, 'plataforma').setScale(1).refreshBody();
+
         this.plataformas.create(600, 400, 'plataforma');
         this.plataformas.create(50, 250, 'plataforma');
         this.plataformas.create(750, 220, 'plataforma');
 
         // Crear personaje
-        this.personaje = this.physics.add.sprite(100, 450, 'personaje');
+        this.personaje = this.physics.add.sprite(400, 300, 'personaje');
         this.personaje.setBounce(0.2);
         this.personaje.setCollideWorldBounds(true);
 
@@ -64,9 +69,19 @@ export default class Nivel1 extends Phaser.Scene {
 
         // Crear recursos (estrellas)
         this.recursos = this.physics.add.group({
-            key: 'estrella',
-            repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
+            key: 'estrella',          // Imagen de la estrella
+            repeat: 11,               // Número de estrellas (originalmente 11)
+            setXY: { 
+                x: 12,                // Posición inicial en X
+                y: 0,                 // Posición inicial en Y
+                stepX: 70             // Espaciado entre estrellas en X
+                
+            }
+        });
+        
+        this.recursos.children.iterate((recurso) => {
+            recurso.setBounceY(Phaser.Math.FloatBetween(0.6, 1.0)); // Aumentar el rebote
+            recurso.setScale(0.8); // Reducir el tamaño de las estrellas
         });
 
         this.recursos.children.iterate((recurso) => {

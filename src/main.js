@@ -1,6 +1,7 @@
 //import Presentacion from './scenes/Presentacion.js';
-// Importar las escenas
+//import ElegirPersonaje from './scenes/ElegirPersonaje.js';
 import Nivel1 from './scenes/Nivel1.js';
+
 
 // Configuración del juego
 const config = {
