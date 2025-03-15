@@ -6,10 +6,10 @@ export default class Nivel1 extends Phaser.Scene {
     // Precarga de recursos
     preload() {
         this.load.image('fondo', 'assets/fondos/fondo1.png'); // Fondo del nivel 1
-        this.load.image('plataforma', 'assets/recursos/platform.png'); // Plataformas
-        this.load.image('recurso', 'assets/star.png'); // Recursos (estrellas)
-        this.load.image('bomba', 'assets/bomb.png'); // Bombas (enemigos)
-        this.load.spritesheet('personaje', 'assets/personaje2_spriteshet.png', {
+        //this.load.image('plataforma', 'assets/recursos/plataforma.png'); // Plataformas - fixed missing asset
+        this.load.image('estrella', 'assets/recursos/star.png'); // Recursos (estrellas)
+        this.load.image('bomba', 'assets/recursos/meteorito.png'); // Bombas (enemigos)
+        this.load.spritesheet('personaje', 'assets/personajes/spritep2.png', {
             frameWidth: 32,
             frameHeight: 48
         }); // Personaje
@@ -20,9 +20,11 @@ export default class Nivel1 extends Phaser.Scene {
         // Configuración inicial
         this.vidas = 3; // Inicializar vidas
         this.puntuacion = 0; // Inicializar puntuación
+        this.gameOver = false; // Flag for game over state
 
         // Mostrar fondo
-        this.add.image(400, 300, 'fondo');
+        const fondo = this.add.image(400, 300, 'fondo');
+        fondo.setScale(this.sys.game.config.width / fondo.width, this.sys.game.config.height / fondo.height);
 
         // Crear plataformas
         this.plataformas = this.physics.add.staticGroup();
@@ -62,7 +64,7 @@ export default class Nivel1 extends Phaser.Scene {
 
         // Crear recursos (estrellas)
         this.recursos = this.physics.add.group({
-            key: 'recurso',
+            key: 'estrella',
             repeat: 11,
             setXY: { x: 12, y: 0, stepX: 70 }
         });
@@ -96,6 +98,10 @@ export default class Nivel1 extends Phaser.Scene {
 
     // Actualización del juego (se ejecuta en cada frame)
     update() {
+        if (this.gameOver) {
+            return;
+        }
+        
         // Movimiento del personaje
         if (this.cursors.left.isDown) {
             this.personaje.setVelocityX(-160);
@@ -134,16 +140,29 @@ export default class Nivel1 extends Phaser.Scene {
             bomba.setBounce(1);
             bomba.setCollideWorldBounds(true);
             bomba.setVelocity(Phaser.Math.Between(-200, 200), 20);
+            bomba.allowGravity = false; // Added from original code to make bombs float
         }
     }
 
     // Perder una vida
-    perderVida() {
+    perderVida(personaje, bomba) {
+        if (this.gameOver) return;
+        
+        bomba.disableBody(true, true);
+
         this.vidas--;
         this.mostrarVidas();
 
         if (this.vidas === 0) {
-            this.scene.start('GameOver');
+            this.gameOver = true;
+            this.physics.pause();
+            this.personaje.setTint(0xff0000);
+            this.personaje.anims.play('quieto');
+            
+            // Wait a moment before transitioning to GameOver scene
+            this.time.delayedCall(1000, () => {
+                this.scene.start('GameOver', { score: this.puntuacion });
+            });
         }
     }
 
