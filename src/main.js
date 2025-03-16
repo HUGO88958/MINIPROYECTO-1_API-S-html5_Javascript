@@ -13,7 +13,7 @@ const config = {
         default: 'arcade',       // Motor de físicas (Arcade es el más simple)
         arcade: {
             gravity: { y: 300 }, // Gravedad en el eje Y
-            debug: false       // Modo debug (muestra hitboxes)
+            debug: true     // Modo debug (muestra hitboxes)
         }
     },
     scene: [Nivel1, Nivel2] // Cargar solo la escena de Nivel 1

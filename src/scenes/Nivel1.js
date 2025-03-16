@@ -33,7 +33,7 @@ export default class Nivel1 extends Phaser.Scene {
         this.plataformas.create(300, 600, 'plataforma').setScale(1).refreshBody();
         this.plataformas.create(100, 600, 'plataforma').setScale(1).refreshBody();
 
-        this.plataformas.create(600, 400, 'plataforma');
+        this.plataformas.create(500, 400, 'plataforma');
         this.plataformas.create(50, 250, 'plataforma');
         this.plataformas.create(750, 220, 'plataforma');
 
@@ -73,7 +73,7 @@ export default class Nivel1 extends Phaser.Scene {
         // Crear recursos (estrellas)
         this.recursos = this.physics.add.group({
             key: 'estrella',
-            repeat: 15,
+            repeat: 11,
             setXY: {
                 x: 12,
                 y: 0,
