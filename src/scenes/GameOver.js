@@ -49,7 +49,7 @@ export default class GameOver extends Phaser.Scene {
 
         // Agregar interacción al botón
         retryButton.on('pointerdown', () => {
-            this.scene.start('GameScene'); // Cambia 'GameScene' por el nombre de tu escena principal
+            this.scene.start('MenuPrincipal'); 
         });
 
         // Efecto de sonido (opcional)
