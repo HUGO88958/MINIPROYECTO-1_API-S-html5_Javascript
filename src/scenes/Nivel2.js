@@ -17,7 +17,7 @@ export default class Nivel2 extends Phaser.Scene {
         this.load.audio('sonidoSalto', 'assets/sonidos/salto.mp3'); 
         this.load.audio('sonidoMorir', 'assets/sonidos/muerte.mp3');
         this.load.audio('sonidoCoalicion', 'assets/sonidos/coalicion.mp3');
-
+        this.load.audio('sonidoQuemada', 'assets/sonidos/quemada.mp3');
     }
 
     // Creación de elementos
@@ -191,11 +191,12 @@ export default class Nivel2 extends Phaser.Scene {
     perderVidaPorCaida() {
         // Asegurar que el personaje está activo antes de procesarlo
         if (!this.personaje.active || this.gameOver) return;
-        
+        this.sound.play('sonidoQuemada', { volume: 0.5 });
         this.vidas--;
         this.mostrarVidas();
         
         if (this.vidas <= 0) {
+            this.sound.play('sonidoMorir', { volume: 0.5 });
             this.gameOver = true;
             this.physics.pause();
             
