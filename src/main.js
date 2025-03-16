@@ -5,6 +5,10 @@ import Nivel2 from './scenes/Nivel2.js';
 import GameOver from './scenes/GameOver.js';
 import Felicitaciones from './scenes/Felicitaciones.js';
 Felicitaciones
+import Presentacion from './scenes/Presentacion.js';
+import MenuPrincipal from './scenes/MenuPrincipal.js';
+import CapturarAlias from './scenes/CapturarAlias.js';
+import Creditos from './scenes/Creditos.js';
 
 // Configuración del juego
 const config = {
@@ -18,11 +22,21 @@ const config = {
             debug: false  // Modo debug (muestra hitboxes)
         }
     },
-    scene: [Nivel2], // Cargar solo la escena de Nivel 1
+    scene: [Nivel2, Presentacion, MenuPrincipal, Creditos, CapturarAlias], // Cargar solo la escena de Nivel 1
     type: Phaser.AUTO,
     width: 800,
     height: 600,
 };
 
-// Crear una instancia del juego
+
+
 const game = new Phaser.Game(config);
+
+// Centrar la ventana
+window.onload = () => {
+    const canvas = document.querySelector('canvas');
+    canvas.style.position = 'absolute';
+    canvas.style.top = '50%';
+    canvas.style.left = '50%';
+    canvas.style.transform = 'translate(-50%, -50%)';
+};
