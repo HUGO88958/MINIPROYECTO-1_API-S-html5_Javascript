@@ -6,76 +6,111 @@ export default class Nivel1 extends Phaser.Scene {
     // Precarga de recursos
     preload() {
         this.load.image('fondo', 'assets/fondos/fondo1.png'); // Fondo del nivel 1
-        this.load.image('plataforma', 'assets/recursos/platform.png'); // Plataformas
-        this.load.image('recurso', 'assets/star.png'); // Recursos (estrellas)
-        this.load.image('bomba', 'assets/bomb.png'); // Bombas (enemigos)
-        this.load.spritesheet('personaje', 'assets/personaje2_spriteshet.png', {
-            frameWidth: 32,
-            frameHeight: 48
-        }); // Personaje
+        this.load.image('plataforma', 'assets/recursos/plataforma.png'); // Plataformas
+        this.load.image('estrella', 'assets/recursos/star.png'); // Recursos (estrellas)
+        this.load.image('bomba', 'assets/recursos/enemigo.png'); // Bombas (enemigos)
+       
+        // Cargar ambos sprites para animaciones
+        this.load.spritesheet('spritep1', 'assets/personajes/spritep1.png', {
+            frameWidth: 100,
+            frameHeight: 80,
+        }); // Sprite Personaje 1
+        
+        this.load.spritesheet('spritep2', 'assets/personajes/spritep2.png', {
+            frameWidth: 137,
+            frameHeight: 144,
+        }); // Sprite Personaje 2
     }
 
     // Creación de elementos
     create() {
+        // Obtener el personaje seleccionado
+        const seleccion = this.registry.get('personajeSeleccionado') || 'personaje1';
+        
+        // Mapear la selección al sprite correspondiente
+        this.spritePersonaje = seleccion === 'personaje1' ? 'spritep1' : 'spritep2';
+        
         // Configuración inicial
         this.vidas = 3; // Inicializar vidas
         this.puntuacion = 0; // Inicializar puntuación
+        this.gameOver = false; // Flag for game over state
 
         // Mostrar fondo
-        this.add.image(400, 300, 'fondo');
+        const fondo = this.add.image(400, 300, 'fondo');
+        fondo.setScale(this.sys.game.config.width / fondo.width, this.sys.game.config.height / fondo.height);
 
         // Crear plataformas
         this.plataformas = this.physics.add.staticGroup();
-        this.plataformas.create(400, 568, 'plataforma').setScale(2).refreshBody();
-        this.plataformas.create(600, 400, 'plataforma');
-        this.plataformas.create(50, 250, 'plataforma');
+        this.plataformas.create(700, 600, 'plataforma').setScale(1).refreshBody();
+        this.plataformas.create(500, 600, 'plataforma').setScale(1).refreshBody();
+        this.plataformas.create(300, 600, 'plataforma').setScale(1).refreshBody();
+        this.plataformas.create(100, 600, 'plataforma').setScale(1).refreshBody();
+
+        this.plataformas.create(300, 400, 'plataforma');
+        this.plataformas.create(50, 200, 'plataforma');
         this.plataformas.create(750, 220, 'plataforma');
 
-        // Crear personaje
-        this.personaje = this.physics.add.sprite(100, 450, 'personaje');
+       
+
+       
+
+         // Ajustar hitboxes de plataformas
+         this.plataformas.children.iterate((plataforma) => {
+            plataforma.body.setSize(plataforma.width * 0.8, plataforma.height*0.4); // Reducir altura del hitbox
+        });
+
+        // Crear personaje usando el sprite correspondiente
+        this.personaje = this.physics.add.sprite(500, 450, this.spritePersonaje);
         this.personaje.setBounce(0.2);
         this.personaje.setCollideWorldBounds(true);
 
-        // Animaciones del personaje
-        this.anims.create({
-            key: 'izquierda',
-            frames: this.anims.generateFrameNumbers('personaje', { start: 0, end: 3 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'quieto',
-            frames: [{ key: 'personaje', frame: 4 }],
-            frameRate: 20
-        });
-
-        this.anims.create({
-            key: 'derecha',
-            frames: this.anims.generateFrameNumbers('personaje', { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
-        });
+        //Ajuste de hitbox
+        if (this.personaje === 'spritep1') {
+            // Reducir el ancho y alto del hitbox para mejor precisión
+            this.personaje.body.setSize(40, 90); 
+            // Centrar el hitbox en el personaje
+            this.personaje.body.setOffset(60, 40);
+            
+        }else{
+            this.personaje.body.setSize(30, 40); // Cambiar tamaño del hitbox del personaje
+             this.personaje.body.setOffset(30,40); // Ajustar la posición del hitbox
+        }
+        
+        // Animaciones del personaje (para el sprite seleccionado)
+        this.crearAnimaciones();
 
         // Colisiones entre personaje y plataformas
         this.physics.add.collider(this.personaje, this.plataformas);
 
         // Crear recursos (estrellas)
         this.recursos = this.physics.add.group({
-            key: 'recurso',
+            key: 'estrella',
             repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
+            setXY: {
+                x: 12,
+                y: 0,
+                stepX: 70
+            }
         });
 
         this.recursos.children.iterate((recurso) => {
-            recurso.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+            recurso.setBounceY(Phaser.Math.FloatBetween(0.6, 1.0));
+            recurso.setScale(0.8);
         });
 
         // Colisiones entre recursos y plataformas
         this.physics.add.collider(this.recursos, this.plataformas);
 
         // Crear bombas (enemigos)
-        this.bombas = this.physics.add.group();
+        this.bombas = this.physics.add.group({
+            key: 'bomba',
+            repeat: 0,
+            setXY: {
+                x: 12,
+                y: 0,
+                stepX: 70
+            }
+        });
 
         // Colisiones entre bombas y plataformas
         this.physics.add.collider(this.bombas, this.plataformas);
@@ -93,27 +128,79 @@ export default class Nivel1 extends Phaser.Scene {
         // Controles del personaje
         this.cursors = this.input.keyboard.createCursorKeys();
     }
+    
+    // Método para crear animaciones según el personaje seleccionado
+    crearAnimaciones() {
+        // Animación de caminar
+        this.anims.create({
+            key: 'caminar',
+            frames: this.anims.generateFrameNumbers(this.spritePersonaje, {frames: [0,1,2,3,4,5] }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+      
+        this.anims.create({
+            
+            key: 'quieto',
+            frames: [{ key: this.spritePersonaje, frame: 5 }],
+            frameRate: 20
+        });
+    }
 
     // Actualización del juego (se ejecuta en cada frame)
     update() {
+        if (this.gameOver) {
+            return;
+        }
+
         // Movimiento del personaje
         if (this.cursors.left.isDown) {
             this.personaje.setVelocityX(-160);
-            this.personaje.anims.play('izquierda', true);
+            this.personaje.anims.play('caminar', true);
+            this.personaje.setFlipX(true); // Invertir horizontalmente para la izquierda
         } else if (this.cursors.right.isDown) {
             this.personaje.setVelocityX(160);
-            this.personaje.anims.play('derecha', true);
+            this.personaje.anims.play('caminar', true);
+            this.personaje.setFlipX(false); // Normal para la derecha
         } else {
             this.personaje.setVelocityX(0);
             this.personaje.anims.play('quieto', true);
         }
 
+        // Salto
         if (this.cursors.up.isDown && this.personaje.body.touching.down) {
-            this.personaje.setVelocityY(-330);
+            this.personaje.setVelocityY(-360);
         }
+
+        this.bombas.children.iterate((bomba) => {
+            // Asegurar que la bomba siempre tenga gravedad constante
+            if (!bomba.body.allowGravity) {
+                bomba.allowGravity = true;
+            }
+            bomba.body.gravity.y = 1000; // Gravedad constante
+    
+            // Mantener rebote constante
+            bomba.setBounce(1.0);
+    
+            // Si la bomba está en el suelo, asegurar movimiento constante
+            if (bomba.body.touching.down) {
+                if (Math.abs(bomba.body.velocity.x) < 50) {
+                    bomba.setVelocityX(Phaser.Math.Between(-200, 200));
+                }
+            }
+    
+            // Si la bomba está fuera de los límites visibles, reposiciónala
+            if (bomba.y > this.sys.game.config.height + 50 || 
+                bomba.x < -50 || 
+                bomba.x > this.sys.game.config.width + 50) {
+                bomba.setPosition(Phaser.Math.Between(0, this.sys.game.config.width), 0);
+                bomba.setVelocity(Phaser.Math.Between(-200, 200), 20);
+            }
+        });
     }
 
-    // Recolectar recursos
+    // Recolectar recursos*******************************
     recolectarRecurso(personaje, recurso) {
         recurso.disableBody(true, true);
 
@@ -123,27 +210,107 @@ export default class Nivel1 extends Phaser.Scene {
 
         // Verificar si se recolectaron todos los recursos
         if (this.recursos.countActive(true) === 0) {
-            // Reiniciar recursos
-            this.recursos.children.iterate((recurso) => {
-                recurso.enableBody(true, recurso.x, 0, true, true);
+            // Transición a Nivel2
+            console.log('Transición a Nivel2 iniciada');
+            this.time.delayedCall(1000, () => {
+                // Pasar tanto la puntuación como el personaje seleccionado al siguiente nivel
+                this.scene.start('Nivel2', {
+                    score: this.puntuacion, 
+                    personajeSeleccionado: this.registry.get('personajeSeleccionado')
+                });
             });
+        }
+    }  
 
-            // Lanzar una bomba
-            const x = (this.personaje.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-            const bomba = this.bombas.create(x, 16, 'bomba');
-            bomba.setBounce(1);
-            bomba.setCollideWorldBounds(true);
-            bomba.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    generarBomba(esBombaFinal = false) {
+        const x = (this.personaje.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+        const bomba = this.bombas.create(x, 16, 'bomba');
+        
+        bomba.setBounce(0.8);
+        bomba.setCollideWorldBounds(true);
+        
+        // Si es bomba final, darle más velocidad como desafío adicional
+        const velocidadBase = esBombaFinal ? 250 : 150;
+        bomba.setVelocity(Phaser.Math.Between(-velocidadBase, velocidadBase), 20);
+        
+        bomba.allowGravity = true;
+        bomba.body.setCircle(bomba.width / 2.5);
+        
+        // Configurar comportamiento de salto
+        this.time.addEvent({
+            delay: Phaser.Math.Between(2000, 4000),
+            callback: () => this.saltoBomba(bomba),
+            callbackScope: this,
+            loop: true
+        });
+        
+        return bomba;
+    }
+
+    // COMPORTAMIENTO DE LA BOMBA
+    saltoBomba(bomba) {
+        // Solo salta si está en contacto con el suelo o plataforma
+        if (bomba.body.touching.down) {
+            // Aplicar impulso vertical constante
+            bomba.setVelocityY(-600);
+
+            // Mantener velocidad horizontal constante
+            bomba.setVelocityX(Phaser.Math.Between(-200, 200));
+        }
+      
+        // Si la bomba está cerca del jugador, intenta saltar hacia él
+        const distancia = Phaser.Math.Distance.Between(
+            bomba.x, bomba.y, 
+            this.personaje.x, this.personaje.y
+        );
+    
+        if (distancia < 200 && bomba.body.touching.down) {
+            // Calcular dirección hacia el jugador
+            const dirX = this.personaje.x - bomba.x;
+            bomba.setVelocityX(dirX > 0 ? 150 : -150);
+            bomba.setVelocityY(-350); // Salto agresivo
         }
     }
 
-    // Perder una vida
-    perderVida() {
+    perderVida(personaje, bomba) {
+        if (this.gameOver) return;
+
+        bomba.disableBody(true, true);
+
         this.vidas--;
         this.mostrarVidas();
 
         if (this.vidas === 0) {
-            this.scene.start('GameOver');
+            this.gameOver = true;
+            this.physics.pause();
+            this.personaje.setTint(0xff0000);
+            this.personaje.anims.play('quieto');
+
+            // Esperar un momento antes de cambiar a la escena GameOver
+            this.time.delayedCall(1000, () => {
+                this.scene.start('GameOver', { 
+                    score: this.puntuacion,
+                    personajeSeleccionado: this.registry.get('personajeSeleccionado') 
+                });
+            });
+        } else {
+            // Regenerar una nueva bomba si no hay bombas activas
+            if (this.bombas.countActive(true) === 0) {
+                const x = (this.personaje.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+                const nuevaBomba = this.bombas.create(x, 16, 'bomba');
+                nuevaBomba.setBounce(0.8);
+                nuevaBomba.setCollideWorldBounds(true);
+                nuevaBomba.setVelocity(Phaser.Math.Between(-100, 100), 20);
+                nuevaBomba.allowGravity = true;
+                nuevaBomba.body.setCircle(nuevaBomba.width / 2.5);
+
+                this.time.addEvent({
+                    delay: Phaser.Math.Between(2000, 4000),
+                    callback: () => this.saltoBomba(nuevaBomba),
+                    callbackScope: this,
+                    loop: true
+                });
+            }
         }
     }
 
