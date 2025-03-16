@@ -86,7 +86,7 @@ export default class Nivel1 extends Phaser.Scene {
         this.physics.add.collider(this.recursos, this.plataformas);
 
         this.bombas = this.physics.add.group({
-            key: '',
+            key: 'bomba',
             repeat: 0,
             setXY: {
                 x: 12,
