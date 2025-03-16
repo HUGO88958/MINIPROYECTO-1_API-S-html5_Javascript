@@ -13,7 +13,7 @@ export default class GameOver extends Phaser.Scene {
 
     create() {
         // Reproducir el sonido
-        this.sound.play('game-over-sound', { volume: 0.5 });
+        this.sound.play('game-over-sound', { volume: 0.2 });
 
         // Agregar el fondo
         const background = this.add.image(400, 300, 'background'); // Ajusta el scale según el tamaño de la imagen
