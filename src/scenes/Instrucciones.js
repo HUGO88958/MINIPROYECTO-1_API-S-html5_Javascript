@@ -42,7 +42,7 @@ export default class Instrucciones extends Phaser.Scene {
             fontSize: '32px',
             fill: '#FFFFFF',
             fontFamily: 'monospace', // Fuente monospace
-            stroke: '#000000', // Borde negro
+            stroke: '#000000', // Borde negrod
             strokeThickness: 2 // Grosor del borde
         }).setOrigin(0.5);
 
