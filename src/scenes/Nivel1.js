@@ -1,45 +1,44 @@
 export default class Nivel1 extends Phaser.Scene {
     constructor() {
         super({ key: 'Nivel1' });
+        this.puedeSaltar = true; // Bandera para controlar el sonido de salto
     }
 
     // Precarga de recursos
     preload() {
-        this.load.image('fondo', 'assets/fondos/fondo1.png'); // Fondo del nivel 1
-        this.load.image('plataforma', 'assets/recursos/plataforma.png'); // Plataformas
-        this.load.image('estrella', 'assets/recursos/star.png'); // Recursos (estrellas)
-        this.load.image('bomba', 'assets/recursos/enemigo.png'); // Bombas (enemigos)
+        this.load.image('fondo', 'assets/fondos/fondo1.png');
+        this.load.image('plataforma', 'assets/recursos/plataforma.png');
+        this.load.image('estrella', 'assets/recursos/star.png');
+        this.load.image('bomba', 'assets/recursos/enemigo.png');
        
-        // Cargar ambos sprites para animaciones
         this.load.spritesheet('spritep1', 'assets/personajes/spritep1.png', {
             frameWidth: 100,
             frameHeight: 80,
-        }); // Sprite Personaje 1
-        
+        });
         this.load.spritesheet('spritep2', 'assets/personajes/spritep2.png', {
             frameWidth: 137,
             frameHeight: 144,
-        }); // Sprite Personaje 2
+        });
+
+        // Cargar sonidos
+        this.load.audio('sonidoRecolectar', 'assets/sonidos/recolectar.mp3');
+        this.load.audio('sonidoSalto', 'assets/sonidos/salto.mp3'); 
+        this.load.audio('sonidoMorir', 'assets/sonidos/muerte.mp3');
+        this.load.audio('sonidoCoalicion', 'assets/sonidos/coalicion.mp3');
     }
 
     // Creación de elementos
     create() {
-        // Obtener el personaje seleccionado
         const seleccion = this.registry.get('personajeSeleccionado') || 'personaje1';
-        
-        // Mapear la selección al sprite correspondiente
         this.spritePersonaje = seleccion === 'personaje1' ? 'spritep1' : 'spritep2';
         
-        // Configuración inicial
-        this.vidas = 3; // Inicializar vidas
-        this.puntuacion = 0; // Inicializar puntuación
-        this.gameOver = false; // Flag for game over state
+        this.vidas = 3;
+        this.puntuacion = 0;
+        this.gameOver = false;
 
-        // Mostrar fondo
         const fondo = this.add.image(400, 300, 'fondo');
         fondo.setScale(this.sys.game.config.width / fondo.width, this.sys.game.config.height / fondo.height);
 
-        // Crear plataformas
         this.plataformas = this.physics.add.staticGroup();
         this.plataformas.create(700, 600, 'plataforma').setScale(1).refreshBody();
         this.plataformas.create(500, 600, 'plataforma').setScale(1).refreshBody();
@@ -50,39 +49,25 @@ export default class Nivel1 extends Phaser.Scene {
         this.plataformas.create(50, 200, 'plataforma');
         this.plataformas.create(750, 220, 'plataforma');
 
-       
-
-       
-
-         // Ajustar hitboxes de plataformas
-         this.plataformas.children.iterate((plataforma) => {
-            plataforma.body.setSize(plataforma.width * 0.8, plataforma.height*0.4); // Reducir altura del hitbox
+        this.plataformas.children.iterate((plataforma) => {
+            plataforma.body.setSize(plataforma.width * 0.8, plataforma.height * 0.4);
         });
 
-        // Crear personaje usando el sprite correspondiente
         this.personaje = this.physics.add.sprite(500, 450, this.spritePersonaje);
         this.personaje.setBounce(0.2);
         this.personaje.setCollideWorldBounds(true);
 
-        //Ajuste de hitbox
         if (this.personaje === 'spritep1') {
-            // Reducir el ancho y alto del hitbox para mejor precisión
             this.personaje.body.setSize(40, 90); 
-            // Centrar el hitbox en el personaje
             this.personaje.body.setOffset(60, 40);
-            
-        }else{
-            this.personaje.body.setSize(30, 40); // Cambiar tamaño del hitbox del personaje
-             this.personaje.body.setOffset(30,40); // Ajustar la posición del hitbox
+        } else {
+            this.personaje.body.setSize(30, 40);
+            this.personaje.body.setOffset(30, 40);
         }
         
-        // Animaciones del personaje (para el sprite seleccionado)
         this.crearAnimaciones();
-
-        // Colisiones entre personaje y plataformas
         this.physics.add.collider(this.personaje, this.plataformas);
 
-        // Crear recursos (estrellas)
         this.recursos = this.physics.add.group({
             key: 'estrella',
             repeat: 11,
@@ -98,10 +83,8 @@ export default class Nivel1 extends Phaser.Scene {
             recurso.setScale(0.8);
         });
 
-        // Colisiones entre recursos y plataformas
         this.physics.add.collider(this.recursos, this.plataformas);
 
-        // Crear bombas (enemigos)
         this.bombas = this.physics.add.group({
             key: 'bomba',
             repeat: 0,
@@ -112,43 +95,31 @@ export default class Nivel1 extends Phaser.Scene {
             }
         });
 
-        // Colisiones entre bombas y plataformas
         this.physics.add.collider(this.bombas, this.plataformas);
-
-        // Colisiones entre personaje y bombas
         this.physics.add.collider(this.personaje, this.bombas, this.perderVida, null, this);
-
-        // Colisiones entre personaje y recursos
         this.physics.add.overlap(this.personaje, this.recursos, this.recolectarRecurso, null, this);
 
-        // Mostrar vidas y puntuación
         this.mostrarVidas();
         this.mostrarPuntuacion();
 
-        // Controles del personaje
         this.cursors = this.input.keyboard.createCursorKeys();
     }
     
-    // Método para crear animaciones según el personaje seleccionado
     crearAnimaciones() {
-        // Animación de caminar
         this.anims.create({
             key: 'caminar',
-            frames: this.anims.generateFrameNumbers(this.spritePersonaje, {frames: [0,1,2,3,4,5] }),
+            frames: this.anims.generateFrameNumbers(this.spritePersonaje, { frames: [0, 1, 2, 3, 4, 5] }),
             frameRate: 10,
             repeat: -1
         });
 
-      
         this.anims.create({
-            
             key: 'quieto',
             frames: [{ key: this.spritePersonaje, frame: 5 }],
             frameRate: 20
         });
     }
 
-    // Actualización del juego (se ejecuta en cada frame)
     update() {
         if (this.gameOver) {
             return;
@@ -158,11 +129,11 @@ export default class Nivel1 extends Phaser.Scene {
         if (this.cursors.left.isDown) {
             this.personaje.setVelocityX(-160);
             this.personaje.anims.play('caminar', true);
-            this.personaje.setFlipX(true); // Invertir horizontalmente para la izquierda
+            this.personaje.setFlipX(true);
         } else if (this.cursors.right.isDown) {
             this.personaje.setVelocityX(160);
             this.personaje.anims.play('caminar', true);
-            this.personaje.setFlipX(false); // Normal para la derecha
+            this.personaje.setFlipX(false);
         } else {
             this.personaje.setVelocityX(0);
             this.personaje.anims.play('quieto', true);
@@ -170,27 +141,28 @@ export default class Nivel1 extends Phaser.Scene {
 
         // Salto
         if (this.cursors.up.isDown && this.personaje.body.touching.down) {
-            this.personaje.setVelocityY(-360);
+            if (this.puedeSaltar) {
+                this.personaje.setVelocityY(-360);
+                this.sound.play('sonidoSalto', { volume: 0.5 }); // Reproducir sonido de salto
+                this.puedeSaltar = false; // Evitar que el sonido se repita
+            }
+        } else if (!this.cursors.up.isDown && this.personaje.body.touching.down) {
+            this.puedeSaltar = true; // Permitir el sonido en el próximo salto
         }
 
         this.bombas.children.iterate((bomba) => {
-            // Asegurar que la bomba siempre tenga gravedad constante
             if (!bomba.body.allowGravity) {
                 bomba.allowGravity = true;
             }
-            bomba.body.gravity.y = 1000; // Gravedad constante
-    
-            // Mantener rebote constante
+            bomba.body.gravity.y = 1000;
             bomba.setBounce(1.0);
-    
-            // Si la bomba está en el suelo, asegurar movimiento constante
+
             if (bomba.body.touching.down) {
                 if (Math.abs(bomba.body.velocity.x) < 50) {
                     bomba.setVelocityX(Phaser.Math.Between(-200, 200));
                 }
             }
-    
-            // Si la bomba está fuera de los límites visibles, reposiciónala
+
             if (bomba.y > this.sys.game.config.height + 50 || 
                 bomba.x < -50 || 
                 bomba.x > this.sys.game.config.width + 50) {
@@ -200,20 +172,15 @@ export default class Nivel1 extends Phaser.Scene {
         });
     }
 
-    // Recolectar recursos*******************************
     recolectarRecurso(personaje, recurso) {
         recurso.disableBody(true, true);
-
-        // Incrementar puntuación
+        this.sound.play('sonidoRecolectar', { volume: 0.5 });
         this.puntuacion += 10;
         this.mostrarPuntuacion();
 
-        // Verificar si se recolectaron todos los recursos
         if (this.recursos.countActive(true) === 0) {
-            // Transición a Nivel2
             console.log('Transición a Nivel2 iniciada');
             this.time.delayedCall(1000, () => {
-                // Pasar tanto la puntuación como el personaje seleccionado al siguiente nivel
                 this.scene.start('Nivel2', {
                     score: this.puntuacion, 
                     personajeSeleccionado: this.registry.get('personajeSeleccionado')
@@ -225,68 +192,48 @@ export default class Nivel1 extends Phaser.Scene {
     generarBomba(esBombaFinal = false) {
         const x = (this.personaje.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         const bomba = this.bombas.create(x, 16, 'bomba');
-        
         bomba.setBounce(0.8);
         bomba.setCollideWorldBounds(true);
-        
-        // Si es bomba final, darle más velocidad como desafío adicional
         const velocidadBase = esBombaFinal ? 250 : 150;
         bomba.setVelocity(Phaser.Math.Between(-velocidadBase, velocidadBase), 20);
-        
         bomba.allowGravity = true;
         bomba.body.setCircle(bomba.width / 2.5);
-        
-        // Configurar comportamiento de salto
         this.time.addEvent({
             delay: Phaser.Math.Between(2000, 4000),
             callback: () => this.saltoBomba(bomba),
             callbackScope: this,
             loop: true
         });
-        
         return bomba;
     }
 
-    // COMPORTAMIENTO DE LA BOMBA
     saltoBomba(bomba) {
-        // Solo salta si está en contacto con el suelo o plataforma
         if (bomba.body.touching.down) {
-            // Aplicar impulso vertical constante
             bomba.setVelocityY(-600);
-
-            // Mantener velocidad horizontal constante
             bomba.setVelocityX(Phaser.Math.Between(-200, 200));
         }
-      
-        // Si la bomba está cerca del jugador, intenta saltar hacia él
-        const distancia = Phaser.Math.Distance.Between(
-            bomba.x, bomba.y, 
-            this.personaje.x, this.personaje.y
-        );
-    
+        const distancia = Phaser.Math.Distance.Between(bomba.x, bomba.y, this.personaje.x, this.personaje.y);
         if (distancia < 200 && bomba.body.touching.down) {
-            // Calcular dirección hacia el jugador
             const dirX = this.personaje.x - bomba.x;
             bomba.setVelocityX(dirX > 0 ? 150 : -150);
-            bomba.setVelocityY(-350); // Salto agresivo
+            bomba.setVelocityY(-350);
         }
     }
 
     perderVida(personaje, bomba) {
         if (this.gameOver) return;
+        this.sound.play('sonidoCoalicion', { volume: 0.5 });
 
         bomba.disableBody(true, true);
-
         this.vidas--;
         this.mostrarVidas();
 
         if (this.vidas === 0) {
+            this.sound.play('sonidoMorir', { volume: 0.5 });
             this.gameOver = true;
             this.physics.pause();
             this.personaje.setTint(0xff0000);
             this.personaje.anims.play('quieto');
-
-            // Esperar un momento antes de cambiar a la escena GameOver
             this.time.delayedCall(1000, () => {
                 this.scene.start('GameOver', { 
                     score: this.puntuacion,
@@ -294,7 +241,6 @@ export default class Nivel1 extends Phaser.Scene {
                 });
             });
         } else {
-            // Regenerar una nueva bomba si no hay bombas activas
             if (this.bombas.countActive(true) === 0) {
                 const x = (this.personaje.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
                 const nuevaBomba = this.bombas.create(x, 16, 'bomba');
@@ -303,7 +249,6 @@ export default class Nivel1 extends Phaser.Scene {
                 nuevaBomba.setVelocity(Phaser.Math.Between(-100, 100), 20);
                 nuevaBomba.allowGravity = true;
                 nuevaBomba.body.setCircle(nuevaBomba.width / 2.5);
-
                 this.time.addEvent({
                     delay: Phaser.Math.Between(2000, 4000),
                     callback: () => this.saltoBomba(nuevaBomba),
@@ -314,7 +259,6 @@ export default class Nivel1 extends Phaser.Scene {
         }
     }
 
-    // Mostrar vidas en pantalla
     mostrarVidas() {
         if (this.textoVidas) {
             this.textoVidas.destroy();
@@ -325,7 +269,6 @@ export default class Nivel1 extends Phaser.Scene {
         });
     }
 
-    // Mostrar puntuación en pantalla
     mostrarPuntuacion() {
         if (this.textoPuntuacion) {
             this.textoPuntuacion.destroy();

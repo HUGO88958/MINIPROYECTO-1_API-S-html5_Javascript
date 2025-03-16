@@ -13,6 +13,11 @@ export default class Nivel2 extends Phaser.Scene {
             frameWidth: 137,
             frameHeight: 144,
         }); // Personaje
+        this.load.audio('sonidoRecolectar', 'assets/sonidos/recolectar.mp3');
+        this.load.audio('sonidoSalto', 'assets/sonidos/salto.mp3'); 
+        this.load.audio('sonidoMorir', 'assets/sonidos/muerte.mp3');
+        this.load.audio('sonidoCoalicion', 'assets/sonidos/coalicion.mp3');
+
     }
 
     // Creación de elementos
@@ -233,6 +238,7 @@ export default class Nivel2 extends Phaser.Scene {
 
         // Salto
         if (this.cursors.up.isDown && this.personaje.body.touching.down) {
+            this.sound.play('sonidoSalto', { volume: 0.5 });
             this.personaje.setVelocityY(-360);
         }
 
@@ -259,7 +265,7 @@ export default class Nivel2 extends Phaser.Scene {
     // Recolectar recursos PASO A la siguiente escena
     recolectarRecurso(personaje, recurso) {
         recurso.disableBody(true, true);
-
+        this.sound.play('sonidoRecolectar', { volume: 0.5 });
         // Incrementar puntuación
         this.puntuacion += 10;
         this.mostrarPuntuacion();
@@ -321,11 +327,12 @@ export default class Nivel2 extends Phaser.Scene {
         if (this.gameOver) return;
 
         
-
+        this.sound.play('sonidoCoalicion', { volume: 0.5 });
         this.vidas--;
         this.mostrarVidas();
 
         if (this.vidas === 0) {
+            this.sound.play('sonidoMorir', { volume: 0.5 });
             this.gameOver = true;
             this.physics.pause();
             this.personaje.setTint(0xff0000);
