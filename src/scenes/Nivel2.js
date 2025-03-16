@@ -57,9 +57,17 @@ export default class Nivel2 extends Phaser.Scene {
         this.personaje.setBounce(0.2);
         this.personaje.setCollideWorldBounds(false); // Permitir salir de los límites para detectar caída
 
-        // Ajuste de hitbox
-        this.personaje.body.setSize(30, 60);
-        this.personaje.body.setOffset(60, 40);
+          //Ajuste de hitbox
+          if (this.personaje === 'spritep1') {
+            // Reducir el ancho y alto del hitbox para mejor precisión
+            this.personaje.body.setSize(40, 90); 
+            // Centrar el hitbox en el personaje
+            this.personaje.body.setOffset(60, 40);
+            
+        }else{
+            this.personaje.body.setSize(30, 40); // Cambiar tamaño del hitbox del personaje
+             this.personaje.body.setOffset(30,40); // Ajustar la posición del hitbox
+        }
 
         // Animaciones del personaje
         this.anims.create({
