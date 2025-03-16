@@ -4,33 +4,38 @@ export default class Presentacion extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('logo', 'assets/recursos/fondo_inicio.jpg');
-        this.load.image('boton', 'assets/recursos/boton_inicio.png');
+        this.load.image('fondoInicio', 'assets/recursos/fondo_inicio.jpg'); // Fondo original
+        this.load.image('botonInicio', 'assets/recursos/boton_inicio.png'); 
     }
 
     create() {
-        // Ajustar el fondo al tamaño de la ventana
-        const fondo = this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo');
-        fondo.setDisplaySize(this.scale.width, this.scale.height); // Ajustar tamaño
+        // Mostrar el fondo de pantalla centrado
+        this.add.image(this.scale.width / 2, this.scale.height / 2, 'fondoInicio')
+            .setOrigin(0.5)
+            .setDisplaySize(this.scale.width, this.scale.height); // Ajusta al tamaño de la ventana
 
-        // Título centrado
-        this.add.text(this.scale.width / 2, this.scale.height * 0.7, 'Rostar', {
+        // Nombre del juego
+        this.add.text(this.scale.width / 2, 100, 'God of:Reach', {
             fontSize: '64px',
-            fill: '#fff'
+            fill: '#FFFFFF',
+            fontFamily: 'monospace',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 4
         }).setOrigin(0.5);
 
-        // Crear botón
-        const boton = this.add.image(this.scale.width / 2, this.scale.height * 0.8, 'boton')
-            .setInteractive()
-            .setScale(0.4); // Escalar el botón
+        // Botón para ir al menú principal 
+        const botonInicio = this.add.image(this.scale.width / 2, this.scale.height - 150, 'botonInicio')
+            .setOrigin(0.5)
+            .setScale(0.5)
+            .setInteractive();
 
-        // Evento para cambiar de escena
-        boton.on('pointerdown', () => {
-            this.scene.start('MenuPrincipal');
-        });
+        botonInicio.on('pointerdown', () => this.iniciarJuego());
+        botonInicio.on('pointerover', () => botonInicio.setScale(0.55));
+        botonInicio.on('pointerout', () => botonInicio.setScale(0.5));
+    }
 
-        // Efectos al pasar el mouse
-        boton.on('pointerover', () => boton.setAlpha(0.7));
-        boton.on('pointerout', () => boton.setAlpha(1));
+    iniciarJuego() {
+        this.scene.start('MenuPrincipal');
     }
 }

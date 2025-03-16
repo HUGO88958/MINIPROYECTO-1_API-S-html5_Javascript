@@ -1,4 +1,4 @@
-export default class Nivel1 extends Phaser.Scene {
+/* export default class Nivel1 extends Phaser.Scene {
     constructor() {
         super({ key: 'Nivel1' });
     }
@@ -168,4 +168,35 @@ export default class Nivel1 extends Phaser.Scene {
             fill: '#fff'
         });
     }
-}
+} */
+
+    export default class Nivel1 extends Phaser.Scene {
+        constructor() {
+            super({ key: 'Nivel1' });
+        }
+    
+        init(data) {
+            this.nombreJugador = data.nombreJugador || 'Jugador';
+            this.personajeSeleccionado = data.personajeSeleccionado || 'MC_personaje';
+        }
+    
+        preload() {
+            this.load.image('fondo', 'assets/fondos/fondo1.png');
+            this.load.image('plataforma', 'assets/recursos/platform.png');
+            this.load.spritesheet(this.personajeSeleccionado, `assets/personajes/${this.personajeSeleccionado}.png`, {
+                frameWidth: 32,
+                frameHeight: 48
+            });
+        }
+    
+        create() {
+            // Mostrar nombre y personaje seleccionado
+            this.add.text(16, 16, `Jugador: ${this.nombreJugador}`, { fontSize: '24px', fill: '#fff' });
+    
+            // Crear personaje seleccionado
+            this.personaje = this.physics.add.sprite(100, 450, this.personajeSeleccionado);
+            this.personaje.setBounce(0.2);
+            this.personaje.setCollideWorldBounds(true);
+        }
+    }
+    
