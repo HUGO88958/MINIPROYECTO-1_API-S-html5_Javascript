@@ -18,7 +18,7 @@ const config = {
             debug: false  // Modo debug (muestra hitboxes)
         }
     },
-    scene: [Nivel2], // Cargar solo la escena de Nivel 1
+    scene: [ElegirPersonaje,Nivel1,Nivel2,GameOver], // Cargar solo la escena de Nivel 1
     type: Phaser.AUTO,
     width: 800,
     height: 600,
