@@ -278,4 +278,5 @@ export default class Nivel1 extends Phaser.Scene {
             fill: '#fff'
         });
     }
-}
+} 
+
