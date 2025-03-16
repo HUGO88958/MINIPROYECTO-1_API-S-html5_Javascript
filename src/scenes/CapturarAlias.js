@@ -36,6 +36,7 @@ export default class CapturarAlias extends Phaser.Scene {
         this.nombreInput.style.textAlign = 'center';
         this.nombreInput.style.borderRadius = '5px';
 
+        // Posicionar campo de texto en relación al canvas
         const canvasRect = this.game.canvas.getBoundingClientRect();
         this.nombreInput.style.position = 'absolute';
         this.nombreInput.style.top = `${canvasRect.top + this.scale.height / 2 - 120}px`;
@@ -70,6 +71,7 @@ export default class CapturarAlias extends Phaser.Scene {
             this.gif.remove();
             this.scene.start('MenuPrincipal');
         });
+
         botonVolver.on('pointerover', () => botonVolver.setStyle({ fill: '#ff0' }));
         botonVolver.on('pointerout', () => botonVolver.setStyle({ fill: '#fff' }));
 
@@ -97,36 +99,37 @@ export default class CapturarAlias extends Phaser.Scene {
     validarAlias() {
         const nombre = this.nombreInput.value.trim();
 
-        // Validación de longitud
+        // ✅ Validación de longitud
         if (nombre.length < 4 || nombre.length > 8) {
             this.mostrarMensaje('El alias debe tener entre 4 y 8 caracteres.');
             return;
         }
 
-        // Validación de caracteres permitidos
+        // ✅ Validación de caracteres permitidos
         const regex = /^[a-zA-Z0-9_]+$/;
         if (!regex.test(nombre)) {
             this.mostrarMensaje('Solo se permiten letras, números y "_".');
             return;
         }
 
-        // Verificar si el alias ya existe en localStorage
+        // ✅ Verificar si el alias ya existe en localStorage
         const aliasRegistrados = JSON.parse(localStorage.getItem('alias')) || [];
         if (aliasRegistrados.includes(nombre)) {
             this.mostrarMensaje('El alias ya está registrado.');
             return;
         }
 
-        // Guardar en localStorage si es válido
+        // ✅ Guardar en localStorage si es válido
         aliasRegistrados.push(nombre);
         localStorage.setItem('alias', JSON.stringify(aliasRegistrados));
 
         this.mostrarMensaje('Alias registrado con éxito.', '#0f0');
 
+        // ✅ Esperar un momento y abrir la escena ElegirPersonaje
         setTimeout(() => {
             this.nombreInput.style.display = 'none';
             this.gif.remove();
-            this.scene.start('SeleccionPersonaje', { nombre });
+            this.scene.start('ElegirPersonaje', { nombre }); // 👉 Pasa el alias a ElegirPersonaje.js
         }, 1000);
     }
 
