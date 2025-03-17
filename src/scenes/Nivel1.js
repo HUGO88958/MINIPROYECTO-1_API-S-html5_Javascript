@@ -6,7 +6,7 @@ export default class Nivel1 extends Phaser.Scene {
 
     // Precarga de recursos
     preload() {
-        this.load.image('fondo', 'assets/fondos/fondo1.png');
+        this.load.image('fondo1', 'assets/fondos/fondo1.png');
         this.load.image('plataforma', 'assets/recursos/plataforma.png');
         this.load.image('estrella', 'assets/recursos/star.png');
         this.load.image('bomba', 'assets/recursos/enemigo.png');
@@ -36,7 +36,7 @@ export default class Nivel1 extends Phaser.Scene {
         this.puntuacion = 0;
         this.gameOver = false;
 
-        const fondo = this.add.image(400, 300, 'fondo');
+        const fondo = this.add.image(400, 300, 'fondo1');
         fondo.setScale(this.sys.game.config.width / fondo.width, this.sys.game.config.height / fondo.height);
 
         this.plataformas = this.physics.add.staticGroup();

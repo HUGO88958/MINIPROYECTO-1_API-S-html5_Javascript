@@ -5,7 +5,7 @@ export default class Nivel2 extends Phaser.Scene {
 
     // Precarga de recursos
     preload() {
-        this.load.image('fondo', 'assets/fondos/fondo2.png'); // Fondo del nivel 2
+        this.load.image('fondo2', 'assets/fondos/fondo2.png'); // Fondo del nivel 2
         this.load.image('plataforma', 'assets/recursos/plataforma.png'); // Plataformas
         this.load.image('estrella', 'assets/recursos/star.png'); // Recursos (estrellas)
         this.load.image('bomba', 'assets/recursos/enemigo.png'); // Bombas (enemigos)
@@ -36,7 +36,7 @@ export default class Nivel2 extends Phaser.Scene {
         this.personajeSpawnY = 200; // Más arriba para evitar caer directamente
 
         // Mostrar fondo
-        const fondo = this.add.image(400, 300, 'fondo');
+        const fondo = this.add.image(400, 300, 'fondo2');
         fondo.setScale(this.anchoPantalla / fondo.width, this.altoPantalla / fondo.height);
 
         // Crear plataformas distribuidas para cubrir la pantalla con espacios estratégicos

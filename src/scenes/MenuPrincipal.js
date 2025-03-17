@@ -4,12 +4,12 @@ export default class MenuPrincipal extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('fondo', 'assets/recursos/fondo_menu.jpeg');
+        this.load.image('fondoM', 'assets/recursos/fondo_menu.jpeg');
     }
 
     create() {
         // Fondo de imagen
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'fondo')
+        this.add.image(this.scale.width / 2, this.scale.height / 2, 'fondoM')
             .setOrigin(0.5)
             .setDisplaySize(this.scale.width, this.scale.height);
 
