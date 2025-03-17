@@ -20,6 +20,8 @@ export default class Nivel2 extends Phaser.Scene {
         this.load.audio('sonidoMorir', 'assets/sonidos/muerte.mp3');
         this.load.audio('sonidoCoalicion', 'assets/sonidos/coalicion.mp3');
         this.load.audio('sonidoQuemada', 'assets/sonidos/quemada.mp3');
+        this.load.image('iconoPausa', 'assets/recursos/pausa.png');
+        this.load.image('iconoReanudar', 'assets/recursos/reanudar.png');
     }
 
     // Creación de elementos
@@ -184,6 +186,7 @@ export default class Nivel2 extends Phaser.Scene {
         });
 
         this.crearBotonSalir();
+        this.crearBotonPausa();
     }
 
     // Método para crear un recurso especial en una posición específica
@@ -281,57 +284,173 @@ export default class Nivel2 extends Phaser.Scene {
     crearBotonSalir() {
         const width = this.sys.game.config.width;
         const height = this.sys.game.config.height;
-    
-        // Tamaño y posición del botón
-        const buttonWidth = 120; // Un poco más ancho para dar espacio al texto
-        const buttonHeight = 50; // Un poco más alto para una mejor visibilidad
-        const margin = 10;
-    
-        // Crear el gráfico del botón con transparencia
+        const buttonWidth = 120; 
+        const buttonHeight = 50; 
+
         const salirButton = this.add.graphics();
         salirButton
-            .fillStyle(0x000000, 0.4) // Fondo negro con 40% de opacidad
-            .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15) // Dimensiones y esquinas más redondeadas
+            .fillStyle(0x000000, 0.4) 
+            .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15) 
             .setDepth(1);
     
-        // Crear el texto dentro del botón
+       
         const salirTexto = this.add.text(buttonWidth / 2, buttonHeight / 2, 'Salir', {
             fontSize: '18px',
             color: '#ffffff',
-            fontFamily: 'Verdana', // Cambia a la fuente que prefieras (debe estar cargada)
+            fontFamily: 'Verdana', 
             fontStyle: 'bold',
             align: 'center',
         })
-            .setOrigin(0.5, 0.5) // Centrar el texto
+            .setOrigin(0.5, 0.5) 
             .setDepth(2);
     
-        // Agrupar el botón y el texto en un contenedor
+
         const container = this.add.container(width - buttonWidth - margin, height - buttonHeight - margin, [salirButton, salirTexto]);
-        container.setSize(buttonWidth, buttonHeight); // Definir el tamaño del contenedor
-        container.setInteractive({ useHandCursor: true }); // Hacer interactivo el contenedor
+        container.setSize(buttonWidth, buttonHeight); 
+        container.setInteractive({ useHandCursor: true });
     
         // Evento al hacer clic en el botón
         container.on('pointerdown', () => {
             this.scene.start('MenuPrincipal'); // Cambiar a la escena del menú principal
         });
     
-        // Efecto al pasar el mouse (cambia a un color más visible)
+       
         container.on('pointerover', () => {
             salirButton.clear()
-                .fillStyle(0xffffff, 0.3) // Cambiar a blanco con 30% de opacidad
+                .fillStyle(0xffffff, 0.3)
                 .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
         });
-    
-        // Restaurar el estilo original al salir el mouse
+
         container.on('pointerout', () => {
             salirButton.clear()
-                .fillStyle(0x000000, 0.4) // Restaurar el fondo negro con transparencia
+                .fillStyle(0x000000, 0.4) 
+                .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+        });
+    }
+
+    crearBotonPausa() {
+        const width = this.sys.game.config.width;
+        const height = this.sys.game.config.height;
+        const buttonWidth = 32; 
+        const buttonHeight = 32; 
+        const margin = 10;
+    
+        const pausaButton = this.add.graphics();
+        pausaButton
+            .fillStyle(0x000000, 0.4) 
+            .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15) 
+            .setDepth(1);
+    
+        //contenedor del botón
+        const container = this.add.container(margin, height - buttonHeight - margin, [pausaButton]);
+        container.setSize(buttonWidth, buttonHeight); 
+        container.setInteractive({ useHandCursor: true });
+    
+        const iconoPausa = this.add.image(buttonWidth / 2, buttonHeight / 2, 'iconoPausa').setScale(0.5).setDepth(2);
+        const iconoReanudar = this.add.image(buttonWidth / 2, buttonHeight / 2, 'iconoReanudar').setScale(0.5).setDepth(2).setVisible(false);
+    
+        //íconos al contenedor
+        container.add(iconoPausa);
+        container.add(iconoReanudar);
+    
+        // Variable estado del juego
+        let enPausa = false;
+    
+        // Creamos una escena superpuesta para manejar la pausa
+        const escenaPausa = this.scene.get('EscenaPausa') || this.scene.add('EscenaPausa', {
+            create: function() {
+                // botón de reanudar 
+                const botonReanudar = this.add.graphics();
+                botonReanudar
+                    .fillStyle(0x000000, 0.4)
+                    .fillRoundedRect(margin, height - buttonHeight - margin, buttonWidth, buttonHeight, 15)
+                    .setDepth(1);
+                
+                const iconoReanudarPausa = this.add.image(
+                    margin + buttonWidth / 2, 
+                    height - buttonHeight - margin + buttonHeight / 2, 
+                    'iconoReanudar'
+                ).setScale(0.5).setDepth(2);
+                
+                const contenedorReanudar = this.add.container(0, 0, [botonReanudar, iconoReanudarPausa]);
+                contenedorReanudar.setSize(buttonWidth, buttonHeight);
+                contenedorReanudar.setPosition(margin, height - buttonHeight - margin);
+                contenedorReanudar.setInteractive({ useHandCursor: true });
+                
+                // Efectos visuales
+                contenedorReanudar.on('pointerover', () => {
+                    botonReanudar.clear()
+                        .fillStyle(0xffffff, 0.3)
+                        .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+                });
+                
+                contenedorReanudar.on('pointerout', () => {
+                    botonReanudar.clear()
+                        .fillStyle(0x000000, 0.4)
+                        .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+                });
+                
+                // Evento de clic para reanudar
+                contenedorReanudar.on('pointerdown', () => {
+                    // Reanudar la escena principal
+                    this.scene.resume('Nivel1');
+                    // Ocultar esta escena
+                    this.scene.setVisible(false);
+                    this.scene.stop();
+                });
+            }
+        }, false);
+        
+        // Escena de pausa inicialmente oculta
+        if (this.scene.get('EscenaPausa')) {
+            this.scene.get('EscenaPausa').scene.setVisible(false);
+            this.scene.get('EscenaPausa').scene.stop();
+        }
+    
+        // Evento de pausa
+        container.on('pointerdown', () => {
+            if (!enPausa) {
+                // Pausar la escena principal
+                this.scene.pause();
+                // Mostrar y activar la escena de pausa
+                escenaPausa.scene.setVisible(true);
+                escenaPausa.scene.start();
+                // Cambiar íconos
+                iconoPausa.setVisible(false);
+                iconoReanudar.setVisible(true);
+                enPausa = true;
+            } else {
+                // Si está en pausa intentar reanudar directamente
+                this.scene.resume();
+                escenaPausa.scene.stop();
+                iconoPausa.setVisible(true);
+                iconoReanudar.setVisible(false);
+                enPausa = false;
+            }
+        });
+    
+        // Escuchar eventos de cambio de estado de la escena
+        this.events.on('resume', () => {
+            iconoPausa.setVisible(true);
+            iconoReanudar.setVisible(false);
+            enPausa = false;
+        });
+    
+        // Efectos
+        container.on('pointerover', () => {
+            pausaButton.clear()
+                .fillStyle(0xffffff, 0.3)
+                .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+        });
+        container.on('pointerout', () => {
+            pausaButton.clear()
+                .fillStyle(0x000000, 0.4) 
                 .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
         });
     }
     
 
-    // Actualización del juego (se ejecuta en cada frame)
+    // Actualización del juego
     update() {
         if (this.gameOver) {
             return;
