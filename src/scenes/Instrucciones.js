@@ -13,7 +13,7 @@ export default class Instrucciones extends Phaser.Scene {
 
     create() {
         // Agregar el fondo
-        const fondo = this.add.image(400, 300, 'FondoI').setScale(1.5);
+        const fondo = this.add.image(400, 300, 'FondoI');
 
         // Texto "Instrucciones" con fuente monospace
         this.add.text(400, 50, 'Instrucciones', {

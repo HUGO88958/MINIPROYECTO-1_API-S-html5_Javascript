@@ -5,10 +5,12 @@ export default class Nivel2 extends Phaser.Scene {
 
     // Precarga de recursos
     preload() {
-        this.load.image('fondo', 'assets/fondos/fondo2.png'); // Fondo del nivel 2
+        this.load.image('fondo2', 'assets/fondos/fondo2.png'); // Fondo del nivel 2
         this.load.image('plataforma', 'assets/recursos/plataforma.png'); // Plataformas
         this.load.image('estrella', 'assets/recursos/star.png'); // Recursos (estrellas)
         this.load.image('bomba', 'assets/recursos/enemigo.png'); // Bombas (enemigos)
+        this.load.image('especial', 'assets/recursos/especial.png');//RECURSO ESPECIAL
+        this.load.audio('especial', 'assets/sonidos/especial.mp3');
         this.load.spritesheet('personaje', 'assets/personajes/spritep2.png', {
             frameWidth: 137,
             frameHeight: 144,
@@ -34,7 +36,7 @@ export default class Nivel2 extends Phaser.Scene {
         this.personajeSpawnY = 200; // Más arriba para evitar caer directamente
 
         // Mostrar fondo
-        const fondo = this.add.image(400, 300, 'fondo');
+        const fondo = this.add.image(400, 300, 'fondo2');
         fondo.setScale(this.anchoPantalla / fondo.width, this.altoPantalla / fondo.height);
 
         // Crear plataformas distribuidas para cubrir la pantalla con espacios estratégicos
@@ -91,8 +93,12 @@ export default class Nivel2 extends Phaser.Scene {
         // Colisiones entre personaje y plataformas
         this.physics.add.collider(this.personaje, this.plataformas);
 
+        
+
         // Crear recursos (estrellas) - Distribuidas por toda la pantalla
         this.recursos = this.physics.add.group();
+
+       
         
         // Posiciones para estrellas más distribuidas estratégicamente
         const posicionesEstrellas = [
@@ -114,6 +120,9 @@ export default class Nivel2 extends Phaser.Scene {
             {x: 300, y: this.altoPantalla - 530},
             {x: 500, y: this.altoPantalla - 530},
         ];
+
+        
+
         
         // Crear estrellas en las posiciones definidas
         posicionesEstrellas.forEach(pos => {
@@ -121,6 +130,22 @@ export default class Nivel2 extends Phaser.Scene {
             estrella.setBounceY(Phaser.Math.FloatBetween(0.6, 1.0));
             estrella.setScale(0.8);
         });
+
+        //Recurso especial ESTRELLA ROJA
+        this.especiales = this.physics.add.group();
+        this.physics.add.collider(this.especiales, this.plataformas);
+        this.crearEspecial(200, this.altoPantalla - 500); // SOLO UNA ESTRELLA
+
+        this.physics.add.overlap(
+            this.personaje, // Personaje que recoge
+            this.especiales, // Grupo de recursos especiales
+            this.recolectarEspecial, // Método que maneja la recolección
+            null, // Filtro adicional (puedes usar null para no filtrar)
+            this // Contexto de `this` para acceder a las propiedades del juego
+        );
+        
+        
+
 
         // Colisiones entre recursos y plataformas
         this.physics.add.collider(this.recursos, this.plataformas);
@@ -139,6 +164,10 @@ export default class Nivel2 extends Phaser.Scene {
         // Colisiones entre personaje y recursos
         this.physics.add.overlap(this.personaje, this.recursos, this.recolectarRecurso, null, this);
 
+        // Colisiones entre personaje y recursos especiales
+        this.physics.add.overlap(this.personaje, this.especiales, this.recolectarEspecial, null, this);
+
+
         // Mostrar vidas y puntuación
         this.mostrarVidas();
         this.mostrarPuntuacion();
@@ -154,6 +183,37 @@ export default class Nivel2 extends Phaser.Scene {
             loop: true
         });
     }
+
+    // Método para crear un recurso especial en una posición específica
+    crearEspecial(x, y) {
+        const especial = this.especiales.create(x, y, 'especial');
+       
+        
+
+        
+    }
+
+    // Método para manejar la recolección del recurso especial
+    recolectarEspecial(personaje, especial) {
+        especial.disableBody(true, true); // Deshabilitar el cuerpo del recurso
+
+        this.personaje.setTint(0x00ff00); // Tinte verde para indicar ganancia de vida
+        
+        // Quitar el tinte después de un momento
+        this.time.delayedCall(300, () => {
+        this.personaje.clearTint();
+        });
+
+
+
+        this.vidas++; // Aumentar una vida
+        this.mostrarVidas(); // Actualizar la muestra de vidas
+
+        // Opcional: Añadir un sonido al recolectar el recurso
+        this.sound.play('especial'); // Asegúrate de cargar el sonido en preload()
+    }
+
+
 
     // Crear una bomba con comportamiento avanzado
     crearBomba() {
@@ -280,6 +340,12 @@ export default class Nivel2 extends Phaser.Scene {
                 const estrella = this.recursos.create(x, y, 'estrella');
                 estrella.setBounceY(Phaser.Math.FloatBetween(0.6, 1.0));
                 estrella.setScale(0.8);
+            }
+            if (Phaser.Math.Between(1, 100) <= 20) {
+                this.crearEspecial(
+                    Phaser.Math.Between(100, this.anchoPantalla - 100),
+                    Phaser.Math.Between(50, this.altoPantalla / 2)
+                );
             }
 
             // Lanzar más bombas con comportamiento de salto
