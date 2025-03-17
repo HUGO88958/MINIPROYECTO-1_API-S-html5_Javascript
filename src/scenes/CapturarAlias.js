@@ -113,19 +113,16 @@ export default class CapturarAlias extends Phaser.Scene {
         }
 
         // ✅ Verificar si el alias ya existe en localStorage
-        const aliasRegistrados = JSON.parse(localStorage.getItem('alias')) || [];
-        if (aliasRegistrados.includes(nombre)) {
-            this.mostrarMensaje('El alias ya está registrado.');
-            return;
+        let aliasRegistrados = JSON.parse(localStorage.getItem('alias')) || [];
+        if (!aliasRegistrados.includes(nombre)) {
+            aliasRegistrados.push(nombre);
+            localStorage.setItem('alias', JSON.stringify(aliasRegistrados));
+            this.mostrarMensaje('Alias registrado con éxito.', '#0f0');
+        } else {
+            this.mostrarMensaje('Alias existente, continuando...', '#0f0');
         }
 
-        // ✅ Guardar en localStorage si es válido
-        aliasRegistrados.push(nombre);
-        localStorage.setItem('alias', JSON.stringify(aliasRegistrados));
-
-        this.mostrarMensaje('Alias registrado con éxito.', '#0f0');
-
-        // ✅ Esperar un momento y abrir la escena ElegirPersonaje
+        // ✅ Pasar directamente a la escena de selección de personaje
         setTimeout(() => {
             this.nombreInput.style.display = 'none';
             this.gif.remove();
