@@ -11,10 +11,6 @@ export default class Nivel2 extends Phaser.Scene {
         this.load.image('bomba', 'assets/recursos/enemigo.png'); 
         this.load.image('especial', 'assets/recursos/especial.png');
         this.load.audio('especial', 'assets/sonidos/especial.mp3');
-        this.load.spritesheet('spritep1', 'assets/personajes/spritep1.png', {
-            frameWidth: 100,
-            frameHeight: 80,
-        });
         this.load.spritesheet('personaje', 'assets/personajes/spritep2.png', {
             frameWidth: 137,
             frameHeight: 144,
@@ -24,8 +20,6 @@ export default class Nivel2 extends Phaser.Scene {
         this.load.audio('sonidoMorir', 'assets/sonidos/muerte.mp3');
         this.load.audio('sonidoCoalicion', 'assets/sonidos/coalicion.mp3');
         this.load.audio('sonidoQuemada', 'assets/sonidos/quemada.mp3');
-        this.load.image('iconoPausa', 'assets/recursos/pausa.png');
-        this.load.image('iconoReanudar', 'assets/recursos/reanudar.png');
     }
 
     // Creación de elementos
@@ -190,7 +184,6 @@ export default class Nivel2 extends Phaser.Scene {
         });
 
         this.crearBotonSalir();
-        this.crearBotonPausa();
     }
 
     // Método para crear un recurso especial en una posición específica
@@ -288,51 +281,57 @@ export default class Nivel2 extends Phaser.Scene {
     crearBotonSalir() {
         const width = this.sys.game.config.width;
         const height = this.sys.game.config.height;
-        const buttonWidth = 120; 
-        const buttonHeight = 50; 
-
+    
+        // Tamaño y posición del botón
+        const buttonWidth = 120; // Un poco más ancho para dar espacio al texto
+        const buttonHeight = 50; // Un poco más alto para una mejor visibilidad
+        const margin = 10;
+    
+        // Crear el gráfico del botón con transparencia
         const salirButton = this.add.graphics();
         salirButton
-            .fillStyle(0x000000, 0.4) 
-            .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15) 
+            .fillStyle(0x000000, 0.4) // Fondo negro con 40% de opacidad
+            .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15) // Dimensiones y esquinas más redondeadas
             .setDepth(1);
     
-       
+        // Crear el texto dentro del botón
         const salirTexto = this.add.text(buttonWidth / 2, buttonHeight / 2, 'Salir', {
             fontSize: '18px',
             color: '#ffffff',
-            fontFamily: 'Verdana', 
+            fontFamily: 'Verdana', // Cambia a la fuente que prefieras (debe estar cargada)
             fontStyle: 'bold',
             align: 'center',
         })
-            .setOrigin(0.5, 0.5) 
+            .setOrigin(0.5, 0.5) // Centrar el texto
             .setDepth(2);
     
-
+        // Agrupar el botón y el texto en un contenedor
         const container = this.add.container(width - buttonWidth - margin, height - buttonHeight - margin, [salirButton, salirTexto]);
-        container.setSize(buttonWidth, buttonHeight); 
-        container.setInteractive({ useHandCursor: true });
+        container.setSize(buttonWidth, buttonHeight); // Definir el tamaño del contenedor
+        container.setInteractive({ useHandCursor: true }); // Hacer interactivo el contenedor
     
         // Evento al hacer clic en el botón
         container.on('pointerdown', () => {
             this.scene.start('MenuPrincipal'); // Cambiar a la escena del menú principal
         });
     
-       
+        // Efecto al pasar el mouse (cambia a un color más visible)
         container.on('pointerover', () => {
             salirButton.clear()
-                .fillStyle(0xffffff, 0.3)
+                .fillStyle(0xffffff, 0.3) // Cambiar a blanco con 30% de opacidad
                 .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
         });
-
+    
+        // Restaurar el estilo original al salir el mouse
         container.on('pointerout', () => {
             salirButton.clear()
-                .fillStyle(0x000000, 0.4) 
+                .fillStyle(0x000000, 0.4) // Restaurar el fondo negro con transparencia
                 .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
         });
     }
+    
 
-    // Actualización del juego
+    // Actualización del juego (se ejecuta en cada frame)
     update() {
         if (this.gameOver) {
             return;
