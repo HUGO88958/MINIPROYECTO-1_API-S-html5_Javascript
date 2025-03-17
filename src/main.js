@@ -12,31 +12,31 @@ import Instrucciones from './scenes/Instrucciones.js';
 
 // ✅ Configuración del juego
 const config = {
-    type: Phaser.AUTO,           
-    width: 800,                  
-    height: 600,                 
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
     physics: {
-        default: 'arcade',       
+        default: 'arcade',
         arcade: {
-            gravity: { y: 300 }, 
-            debug: false  
+            gravity: { y: 300 },
+            debug: false
         }
     },
-    scene: [Presentacion, MenuPrincipal, CapturarAlias, ElegirPersonaje, Nivel1, Nivel2, GameOver, Creditos, Instrucciones, Records],
+    scene: [
+        Presentacion,
+        MenuPrincipal,
+        CapturarAlias,
+        ElegirPersonaje,
+        Nivel1,
+        Nivel2,
+        GameOver,
+        Creditos,
+        Instrucciones,
+        Records
+    ]
 };
 
-// ✅ Cargar música e íconos globalmente
-const preload = function () {
-    this.load.audio('musica', 'assets/sonidos/musica.mp3');
-    this.load.image('audioOn', 'assets/recursos/audioOn.png');
-    this.load.image('audioOff', 'assets/recursos/audioOff.png');
-};
-
-const create = function () {
-    // ✅ Iniciar AudioManager de forma global
-    AudioManager.getInstance(this).create();
-};
-
+// ✅ Crear instancia del juego
 const game = new Phaser.Game(config);
 
 window.onload = () => {
@@ -46,3 +46,25 @@ window.onload = () => {
     canvas.style.left = '50%';
     canvas.style.transform = 'translate(-50%, -50%)';
 };
+
+// ✅ Inicializar música global
+class GlobalAudioScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'GlobalAudioScene', active: true });
+    }
+
+    preload() {
+        console.log('✅ Cargando música e íconos...');
+        this.load.audio('musica', 'assets/sonidos/musica.mp3');
+        this.load.image('audioOn', 'assets/recursos/audioOn.png');
+        this.load.image('audioOff', 'assets/recursos/audioOff.png');
+    }
+
+    create() {
+        // ✅ Iniciar AudioManager
+        AudioManager.getInstance(this).create();
+    }
+}
+
+// ✅ Agregar escena de audio global
+game.scene.add('GlobalAudioScene', GlobalAudioScene);

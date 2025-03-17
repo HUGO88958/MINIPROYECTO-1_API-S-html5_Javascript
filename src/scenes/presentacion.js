@@ -1,4 +1,3 @@
-import AudioManager from './AudioManager.js';
 
 export default class Presentacion extends Phaser.Scene {
     constructor() {
@@ -6,20 +5,15 @@ export default class Presentacion extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('fondoInicio', 'assets/recursos/fondo_inicio.jpg');
-        this.load.image('botonInicio', 'assets/recursos/boton_inicio.png');
-        
-        // ✅ Cargar música e íconos aquí
-        this.load.audio('musica', 'assets/sonidos/musica.mp3');
-        this.load.image('audioOn', 'assets/recursos/audioOn.png');
-        this.load.image('audioOff', 'assets/recursos/audioOff.png');
+        this.load.image('fondoInicio', 'assets/recursos/fondo_inicio.jpg'); // Fondo original
+        this.load.image('botonInicio', 'assets/recursos/boton_inicio.png'); 
     }
 
     create() {
         // Mostrar el fondo de pantalla centrado
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'fondoInicio')
             .setOrigin(0.5)
-            .setDisplaySize(this.scale.width, this.scale.height);
+            .setDisplaySize(this.scale.width, this.scale.height); // Ajusta al tamaño de la ventana
 
         // Nombre del juego
         this.add.text(this.scale.width / 2, 100, 'God of:Reach', {
@@ -31,7 +25,7 @@ export default class Presentacion extends Phaser.Scene {
             strokeThickness: 4
         }).setOrigin(0.5);
 
-        // Botón para ir al menú principal
+        // Botón para ir al menú principal 
         const botonInicio = this.add.image(this.scale.width / 2, this.scale.height - 150, 'botonInicio')
             .setOrigin(0.5)
             .setScale(0.5)
@@ -40,9 +34,6 @@ export default class Presentacion extends Phaser.Scene {
         botonInicio.on('pointerdown', () => this.iniciarJuego());
         botonInicio.on('pointerover', () => botonInicio.setScale(0.55));
         botonInicio.on('pointerout', () => botonInicio.setScale(0.5));
-
-        // ✅ Crear el botón de música desde el AudioManager
-        AudioManager.getInstance(this).create();
     }
 
     iniciarJuego() {
