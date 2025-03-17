@@ -39,6 +39,11 @@ const config = {
 // Crear instancia del juego
 const game = new Phaser.Game(config);
 
+game.events.once('ready', () => {
+    const canvas = game.canvas;
+    canvas.id = 'gameCanvas'; 
+});
+
 window.onload = () => {
     const canvas = document.querySelector('canvas');
     canvas.style.position = 'absolute';

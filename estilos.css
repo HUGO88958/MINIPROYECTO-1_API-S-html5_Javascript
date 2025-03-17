@@ -4,6 +4,12 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-image: linear-gradient(to bottom, #000000, #333333);
+    background-image: linear-gradient(to bottom, #db9a1a, #000000);
     background-color: #000; 
+}
+
+#gameCanvas {
+    border: 5px solid white; 
+    display: block; 
+    margin: 0 auto; 
 }
