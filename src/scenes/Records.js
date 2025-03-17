@@ -3,7 +3,12 @@ export default class Records extends Phaser.Scene {
         super({ key: 'Records' });
     }
 
+    preload(){
+        this.load.image('FondoR', './assets/fondos/FondoI.png');
+    }
+
     create() {
+        const fondo = this.add.image(400, 300, 'FondoR');
         this.add.text(200, 50, '🏆 Mejores Puntuaciones 🏆', {
             fontSize: '32px',
             fill: '#ffffff',

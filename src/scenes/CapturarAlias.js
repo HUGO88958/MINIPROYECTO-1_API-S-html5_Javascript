@@ -3,7 +3,12 @@ export default class CapturarAlias extends Phaser.Scene {
         super({ key: 'CapturarAlias' });
     }
 
+    preload(){
+        this.load.image('FondoC', './assets/fondos/FondoI.png');
+    }
+
     create() {
+        const fondo = this.add.image(400, 300, 'FondoC');
         this.cameras.main.setBackgroundColor('#000');
 
         // Título
