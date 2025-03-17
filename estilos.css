@@ -5,5 +5,5 @@ body {
     height: 100vh;
     margin: 0;
     background-image: linear-gradient(to bottom, #000000, #333333);
-    background-color: #000; /* Color de fondo de respaldo */
+    background-color: #000; 
 }

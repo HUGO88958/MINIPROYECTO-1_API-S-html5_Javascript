@@ -10,7 +10,7 @@ import Records from './scenes/Records.js';
 import Creditos from './scenes/Creditos.js';
 import Instrucciones from './scenes/Instrucciones.js';
 
-// ✅ Configuración del juego
+//  Configuración del juego
 const config = {
     type: Phaser.AUTO,
     width: 800,
@@ -36,7 +36,7 @@ const config = {
     ]
 };
 
-// ✅ Crear instancia del juego
+// Crear instancia del juego
 const game = new Phaser.Game(config);
 
 window.onload = () => {
@@ -47,7 +47,7 @@ window.onload = () => {
     canvas.style.transform = 'translate(-50%, -50%)';
 };
 
-// ✅ Inicializar música global
+// Inicializar música global
 class GlobalAudioScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GlobalAudioScene', active: true });
@@ -61,10 +61,10 @@ class GlobalAudioScene extends Phaser.Scene {
     }
 
     create() {
-        // ✅ Iniciar AudioManager
+        //  Iniciar AudioManager
         AudioManager.getInstance(this).create();
     }
 }
 
-// ✅ Agregar escena de audio global
+//  Agregar escena de audio global
 game.scene.add('GlobalAudioScene', GlobalAudioScene);

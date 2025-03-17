@@ -5,6 +5,9 @@ export default class Creditos extends Phaser.Scene {
 
     preload() {
         this.load.image('fondo', 'assets/recursos/fondo_menu.jpeg');
+        this.load.image('andres', 'assets/recursos/andres.jpg');
+        this.load.image('andre', 'assets/recursos/andre.jpeg');
+        this.load.image('hugo', 'assets/recursos/hugo.jpeg');
     }
 
     create() {
@@ -14,8 +17,8 @@ export default class Creditos extends Phaser.Scene {
             .setDisplaySize(this.scale.width, this.scale.height);
 
         // Título
-        this.add.text(this.scale.width / 2, 80, 'CRÉDITOS', {
-            fontSize: '48px', // Ajustado para mantener proporción con la nueva ventana
+        this.add.text(this.scale.width / 2, 60, 'CRÉDITOS', {
+            fontSize: '42px',
             fill: '#FFFFFF',
             fontFamily: 'monospace',
             fontStyle: 'bold',
@@ -23,38 +26,52 @@ export default class Creditos extends Phaser.Scene {
             strokeThickness: 3
         }).setOrigin(0.5);
 
-        // Contenido de los créditos
-        const textoCreditos = [
-            "Concepto, gráficos y programación",
-            "Hugo Vázquez Hernández, Andre Velasquez Acuña y Andrés De Anda",
-            "",
-            "Presentación y diseño",
-            "Andrés De Anda",
-            "",
-            "Niveles",
-            "Andre Velasquez Acuña y Hugo Vázquez Hernández ",
-            "",
-            "Música",
-            "Andre Velasquez Acuña"
+        // Mostrar imágenes y nombres
+        const integrantes = [
+            { key: 'andres', nombre: 'Andrés De Anda' },
+            { key: 'andre', nombre: 'Andre Velasquez Acuña' },
+            { key: 'hugo', nombre: 'Hugo Vázquez Hernández' }
         ];
 
-        textoCreditos.forEach((linea, index) => {
-            this.add.text(this.scale.width / 2, 150 + index * 30, linea, { // Espaciado ajustado
-                fontSize: '24px', // Tamaño de texto ajustado para mantener proporción
+        integrantes.forEach((integrante, index) => {
+            // Imagen
+            this.add.image(this.scale.width / 2 - 120, 140 + index * 120, integrante.key)
+                .setDisplaySize(80, 80)
+                .setOrigin(0.5);
+
+            // Nombre
+            this.add.text(this.scale.width / 2 + 40, 140 + index * 120, integrante.nombre, {
+                fontSize: '24px',
                 fill: '#FFFFFF',
                 fontFamily: 'monospace',
                 stroke: '#000000',
                 strokeThickness: 2
-            }).setOrigin(0.5);
+            }).setOrigin(0, 0.5);
         });
 
+        this.add.text(this.scale.width / 2, 460, 'Materia: Tecnologías Web', {
+            fontSize: '20px',
+            fill: '#FFFFFF',
+            fontFamily: 'monospace',
+            stroke: '#000000',
+            strokeThickness: 2
+        }).setOrigin(0.5);
+
+        this.add.text(this.scale.width / 2, 490, `Fecha: ${new Date().toLocaleDateString()}`, {
+            fontSize: '20px',
+            fill: '#FFFFFF',
+            fontFamily: 'monospace',
+            stroke: '#000000',
+            strokeThickness: 2
+        }).setOrigin(0.5);
+
         // Botón para regresar al menú principal
-        const botonVolver = this.add.text(this.scale.width / 2, this.scale.height - 80, '↩ Volver al Menú', {
-            fontSize: '28px', // Tamaño ajustado para mantener proporción
+        const botonVolver = this.add.text(this.scale.width / 2, this.scale.height - 40, '↩ Volver al Menú', {
+            fontSize: '24px',
             fill: '#FFFFFF',
             fontFamily: 'monospace',
             backgroundColor: '#555',
-            padding: { x: 12, y: 8 },
+            padding: { x: 10, y: 5 },
             stroke: '#000000',
             strokeThickness: 2
         }).setOrigin(0.5).setInteractive();

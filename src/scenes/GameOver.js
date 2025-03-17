@@ -11,14 +11,14 @@ export default class GameOver extends Phaser.Scene {
     }
 
     create(data) {
-        // ✅ Reproducir sonido de Game Over
+        //  Reproducir sonido de Game Over
         this.sound.play('game-over-sound', { volume: 0.5 });
 
-        // ✅ Mostrar fondo
+        //  Mostrar fondo
         const background = this.add.image(400, 300, 'background');
         background.setAlpha(0.7);
 
-        // ✅ Mostrar logo de "Game Over"
+        //  Mostrar logo de "Game Over"
         const gameOverLogo = this.add.image(400, 200, 'gameOverLogo').setScale(0.6);
         gameOverLogo.setAlpha(0);
 
@@ -30,7 +30,7 @@ export default class GameOver extends Phaser.Scene {
             ease: 'Power2'
         });
 
-        // ✅ Mostrar botón de reintentar
+        //  Mostrar botón de reintentar
         const retryButton = this.add.image(400, 400, 'retryButton').setScale(0.5);
         retryButton.setAlpha(0);
         retryButton.setInteractive({ useHandCursor: true });
@@ -44,17 +44,17 @@ export default class GameOver extends Phaser.Scene {
             delay: 1000
         });
 
-        // 🔥 **GUARDAR REGISTRO AL PERDER**
+        //  **GUARDAR REGISTRO AL PERDER**
         this.guardarRegistro(data.puntuacion);
 
-        // ✅ Acción al presionar el botón de reintentar
+        //  Acción al presionar el botón de reintentar
         retryButton.on('pointerdown', () => {
             this.sound.stopAll();
             this.scene.start('MenuPrincipal');
         });
     }
 
-    // ✅ Guardar registro en LocalStorage
+    // Guardar registro en LocalStorage
     guardarRegistro(puntuacion) {
         const alias = localStorage.getItem('alias') || 'Jugador Desconocido'; // Alias registrado
         const fecha = new Date().toLocaleString(); // Fecha y hora actual

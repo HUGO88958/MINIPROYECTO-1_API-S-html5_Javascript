@@ -5,11 +5,11 @@ export default class Nivel2 extends Phaser.Scene {
 
     // Precarga de recursos
     preload() {
-        this.load.image('fondo2', 'assets/fondos/fondo2.png'); // Fondo del nivel 2
-        this.load.image('plataforma', 'assets/recursos/plataforma.png'); // Plataformas
-        this.load.image('estrella', 'assets/recursos/star.png'); // Recursos (estrellas)
-        this.load.image('bomba', 'assets/recursos/enemigo.png'); // Bombas (enemigos)
-        this.load.image('especial', 'assets/recursos/especial.png');//RECURSO ESPECIAL
+        this.load.image('fondo2', 'assets/fondos/fondo2.png'); 
+        this.load.image('plataforma', 'assets/recursos/plataforma.png'); 
+        this.load.image('estrella', 'assets/recursos/star.png'); 
+        this.load.image('bomba', 'assets/recursos/enemigo.png'); 
+        this.load.image('especial', 'assets/recursos/especial.png');
         this.load.audio('especial', 'assets/sonidos/especial.mp3');
         this.load.spritesheet('personaje', 'assets/personajes/spritep2.png', {
             frameWidth: 137,
@@ -27,13 +27,13 @@ export default class Nivel2 extends Phaser.Scene {
         // Configuración inicial
         this.vidas = 3; // Inicializar vidas
         this.puntuacion = data.score || 0; // Puntuación del nivel anterior
-        this.gameOver = false; // Flag for game over state
+        this.gameOver = false;
         this.anchoPantalla = this.sys.game.config.width;
         this.altoPantalla = this.sys.game.config.height;
         
         // Punto de spawn del personaje (más arriba y centrado)
         this.personajeSpawnX = this.anchoPantalla / 2;
-        this.personajeSpawnY = 200; // Más arriba para evitar caer directamente
+        this.personajeSpawnY = 200; 
 
         // Mostrar fondo
         const fondo = this.add.image(400, 300, 'fondo2');
@@ -73,7 +73,7 @@ export default class Nivel2 extends Phaser.Scene {
             
         }else{
             this.personaje.body.setSize(30, 40); // Cambiar tamaño del hitbox del personaje
-             this.personaje.body.setOffset(30,40); // Ajustar la posición del hitbox
+             this.personaje.body.setOffset(30,40); 
         }
 
         // Animaciones del personaje
@@ -134,14 +134,14 @@ export default class Nivel2 extends Phaser.Scene {
         //Recurso especial ESTRELLA ROJA
         this.especiales = this.physics.add.group();
         this.physics.add.collider(this.especiales, this.plataformas);
-        this.crearEspecial(200, this.altoPantalla - 500); // SOLO UNA ESTRELLA
+        this.crearEspecial(200, this.altoPantalla - 500); 
 
         this.physics.add.overlap(
-            this.personaje, // Personaje que recoge
-            this.especiales, // Grupo de recursos especiales
-            this.recolectarEspecial, // Método que maneja la recolección
-            null, // Filtro adicional (puedes usar null para no filtrar)
-            this // Contexto de `this` para acceder a las propiedades del juego
+            this.personaje, 
+            this.especiales, 
+            this.recolectarEspecial, 
+            null, 
+            this 
         );
         
         
@@ -177,7 +177,7 @@ export default class Nivel2 extends Phaser.Scene {
         
         // Detector de caída al vacío - verificamos más frecuentemente
         this.verificadorCaida = this.time.addEvent({
-            delay: 100, // Verificar más rápido (cada 100ms)
+            delay: 100, 
             callback: this.verificarCaida,
             callbackScope: this,
             loop: true
@@ -199,8 +199,7 @@ export default class Nivel2 extends Phaser.Scene {
     recolectarEspecial(personaje, especial) {
         especial.disableBody(true, true); // Deshabilitar el cuerpo del recurso
 
-        this.personaje.setTint(0x00ff00); // Tinte verde para indicar ganancia de vida
-        
+        this.personaje.setTint(0x00ff00); 
         // Quitar el tinte después de un momento
         this.time.delayedCall(300, () => {
         this.personaje.clearTint();
@@ -212,7 +211,7 @@ export default class Nivel2 extends Phaser.Scene {
         this.mostrarVidas(); // Actualizar la muestra de vidas
 
         // Opcional: Añadir un sonido al recolectar el recurso
-        this.sound.play('especial'); // Asegúrate de cargar el sonido en preload()
+        this.sound.play('especial'); 
     }
 
 
@@ -366,7 +365,7 @@ export default class Nivel2 extends Phaser.Scene {
             if (!bomba.body.allowGravity) {
                 bomba.allowGravity = true;
             }
-            bomba.body.gravity.y = 900; // Gravedad
+            bomba.body.gravity.y = 900; 
             
             // Si la bomba está fuera de los límites visibles, reposiciónala
             if (bomba.y > this.altoPantalla + 50 ||
@@ -407,7 +406,7 @@ export default class Nivel2 extends Phaser.Scene {
             this.crearBomba();
             
             // Aumentar la dificultad tras cada ciclo de estrellas recolectadas
-            if (this.puntuacion >= 300) {  // Condición de victoria
+            if (this.puntuacion >= 300) {  
                 this.time.delayedCall(1000, () => {
                     this.scene.start('GameOver', { score: this.puntuacion, win: true });
                 });
@@ -438,7 +437,7 @@ export default class Nivel2 extends Phaser.Scene {
             // Calcular dirección hacia el jugador
             const dirX = this.personaje.x - bomba.x;
             bomba.setVelocityX(dirX > 0 ? 200 : -200);
-            bomba.setVelocityY(-500); // Salto agresivo
+            bomba.setVelocityY(-500); 
         }
     }
 

@@ -105,7 +105,6 @@ export default class Felicitaciones extends Phaser.Scene {
     }
 
     update(time, delta) {
-        // Actualizaciones si es necesario
     }
 }
 

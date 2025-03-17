@@ -39,10 +39,10 @@ export default class AudioManager {
         this.audioButton.on('pointerdown', () => {
             if (this.music.isPlaying) {
                 this.music.pause();
-                this.audioButton.setTexture('audioOff').setScale(0.15); // ✅ Mantener tamaño constante
+                this.audioButton.setTexture('audioOff').setScale(0.15); 
             } else {
                 this.music.resume();
-                this.audioButton.setTexture('audioOn').setScale(0.15); // ✅ Mantener tamaño constante
+                this.audioButton.setTexture('audioOn').setScale(0.15); 
             }
         });
     }

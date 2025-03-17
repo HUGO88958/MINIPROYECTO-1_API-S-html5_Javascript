@@ -104,20 +104,20 @@ export default class CapturarAlias extends Phaser.Scene {
     validarAlias() {
         const nombre = this.nombreInput.value.trim();
 
-        // ✅ Validación de longitud
+        // Validación de longitud
         if (nombre.length < 4 || nombre.length > 8) {
             this.mostrarMensaje('El alias debe tener entre 4 y 8 caracteres.');
             return;
         }
 
-        // ✅ Validación de caracteres permitidos
+        // Validación de caracteres permitidos
         const regex = /^[a-zA-Z0-9_]+$/;
         if (!regex.test(nombre)) {
             this.mostrarMensaje('Solo se permiten letras, números y "_".');
             return;
         }
 
-        // ✅ Verificar si el alias ya existe en localStorage
+        // Verificar si el alias ya existe en localStorage
         let aliasRegistrados = JSON.parse(localStorage.getItem('alias')) || [];
         if (!aliasRegistrados.includes(nombre)) {
             aliasRegistrados.push(nombre);
@@ -127,18 +127,17 @@ export default class CapturarAlias extends Phaser.Scene {
             this.mostrarMensaje('Alias existente, continuando...', '#0f0');
         }
 
-        // ✅ Pasar directamente a la escena de selección de personaje
+        // Pasar directamente a la escena de selección de personaje
         setTimeout(() => {
             this.nombreInput.style.display = 'none';
             this.gif.remove();
-            this.scene.start('ElegirPersonaje', { nombre }); // 👉 Pasa el alias a ElegirPersonaje.js
+            this.scene.start('ElegirPersonaje', { nombre }); 
         }, 1000);
     }
 
     mostrarMensaje(mensaje, color = '#ff0000') {
         this.mensajeError.setText(mensaje).setColor(color);
 
-        // Ocultar mensaje después de 2 segundos
         this.time.delayedCall(2000, () => {
             this.mensajeError.setText('');
         });
