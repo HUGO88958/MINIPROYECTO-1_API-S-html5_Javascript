@@ -49,6 +49,7 @@ export default class GameOver extends Phaser.Scene {
 
         // ✅ Acción al presionar el botón de reintentar
         retryButton.on('pointerdown', () => {
+            this.sound.stopAll();
             this.scene.start('MenuPrincipal');
         });
     }
