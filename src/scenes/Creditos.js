@@ -49,7 +49,6 @@ export default class Creditos extends Phaser.Scene {
             }).setOrigin(0, 0.5);
         });
 
-        // ✅ Subí "Materia" y "Fecha" hacia arriba unos 40 píxeles
         this.add.text(this.scale.width / 2, 460, 'Materia: Tecnologías Web', {
             fontSize: '20px',
             fill: '#FFFFFF',

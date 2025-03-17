@@ -143,11 +143,11 @@ export default class Nivel1 extends Phaser.Scene {
         if (this.cursors.up.isDown && this.personaje.body.touching.down) {
             if (this.puedeSaltar) {
                 this.personaje.setVelocityY(-360);
-                this.sound.play('sonidoSalto', { volume: 0.5 }); // Reproducir sonido de salto
-                this.puedeSaltar = false; // Evitar que el sonido se repita
+                this.sound.play('sonidoSalto', { volume: 0.5 }); 
+                this.puedeSaltar = false; 
             }
         } else if (!this.cursors.up.isDown && this.personaje.body.touching.down) {
-            this.puedeSaltar = true; // Permitir el sonido en el próximo salto
+            this.puedeSaltar = true; 
         }
 
         this.bombas.children.iterate((bomba) => {
@@ -279,4 +279,3 @@ export default class Nivel1 extends Phaser.Scene {
         });
     }
 } 
-
