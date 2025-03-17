@@ -4,90 +4,70 @@ export default class ElegirPersonaje extends Phaser.Scene {
     }
 
     preload() {
-        // Cargar imágenes de los personajes
         this.load.image('personaje1', 'assets/personajes/personaje1.png');
         this.load.image('personaje2', 'assets/personajes/personaje2.png');
-        this.load.image('contenedor', 'assets/recursos/contenedor.png'); // Imagen del contenedor donde se soltarán los personajes
+        this.load.image('contenedor', 'assets/recursos/contenedor.png');
     }
 
     create() {
-        // Crear un fondo degradado entre rojo y negro
         this.createGradientBackground(0xFF0000, 0x000000);
 
-        // Título de la escena
-        this.add.text(400, 100, 'Elige tu personaje', {
+        this.add.text(400, 50, 'Elige tu personaje', {
             fontFamily: 'Impact',
-            fontSize: '48px',
-            fill: '#FFD700', // Color dorado
-            stroke: '#000000', // Borde negro
-            strokeThickness: 4 // Grosor del borde
+            fontSize: '36px',
+            fill: '#FFD700',
+            stroke: '#000000',
+            strokeThickness: 4
         }).setOrigin(0.5);
 
-        // Zona de selección (donde se deben soltar los personajes)
-        const contenedor = this.add.image(400, 500, 'contenedor').setScale(0.6);
-        contenedor.setAlpha(0.5); // Para que se vea más como una guía
+        const contenedor = this.add.image(400, 450, 'contenedor').setScale(1);
+        contenedor.setAlpha(0.5);
 
-        // Crear los personajes y hacerlos arrastrables
-        const personaje1 = this.add.image(200, 300, 'personaje1').setInteractive();
-        const personaje2 = this.add.image(600, 300, 'personaje2').setInteractive();
+        const personaje1 = this.add.image(250, 200, 'personaje1').setInteractive().setScale(0.4);
+        const personaje2 = this.add.image(550, 200, 'personaje2').setInteractive().setScale(0.6);
 
-        personaje1.setScale(0.5);
-        personaje2.setScale(0.8);
-
-        // Hacer los personajes arrastrables
         this.input.setDraggable(personaje1);
         this.input.setDraggable(personaje2);
 
-        // Evento al comenzar a arrastrar
         this.input.on('dragstart', (pointer, gameObject) => {
-            gameObject.setScale(gameObject.scale * 1.1); // Aumenta el tamaño
+            gameObject.setScale(gameObject.scale * 1.1);
         });
 
-        // Evento mientras se arrastra
         this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
             gameObject.x = dragX;
             gameObject.y = dragY;
         });
 
-        // Evento al soltar el personaje
         this.input.on('dragend', (pointer, gameObject) => {
-            gameObject.setScale(gameObject.scale / 1.1); // Regresa al tamaño normal
-
-            // Verificar si el personaje fue soltado en el contenedor
+            gameObject.setScale(gameObject.scale / 1.1);
+            
             if (Phaser.Geom.Intersects.RectangleToRectangle(gameObject.getBounds(), contenedor.getBounds())) {
                 let personajeSeleccionado = gameObject === personaje1 ? 'personaje1' : 'personaje2';
                 this.registry.set('personajeSeleccionado', personajeSeleccionado);
-                this.scene.start('Nivel1'); // Iniciar el juego con el personaje seleccionado
+                this.scene.start('Nivel1');
             } else {
-                // Regresar al personaje a su posición original si no se soltó en el contenedor
-                if (gameObject === personaje1) {
-                    gameObject.setPosition(200, 300);
-                } else {
-                    gameObject.setPosition(600, 300);
-                }
+                gameObject.setPosition(gameObject === personaje1 ? 250 : 550, 200);
             }
         });
 
-        // Texto debajo de los personajes
-        this.add.text(200, 450, 'Personaje 1', {
-            fontSize: '24px',
+        this.add.text(250, 340, 'Personaje 1', {
+            fontSize: '18px',
             fontFamily: 'Lucida Console',
             fill: '#FFD700',
             stroke: '#000000',
             strokeThickness: 2
         }).setOrigin(0.5);
 
-        this.add.text(600, 450, 'Personaje 2', {
-            fontSize: '24px',
+        this.add.text(550, 340, 'Personaje 2', {
+            fontSize: '18px',
             fontFamily: 'Lucida Console',
             fill: '#FFD700',
             stroke: '#000000',
             strokeThickness: 2
         }).setOrigin(0.5);
 
-        // Texto del contenedor
-        this.add.text(400, 550, 'Arrastra aquí para elegir', {
-            fontSize: '20px',
+        this.add.text(400, 540, 'Entra para empezar a jugar', {
+            fontSize: '16px',
             fontFamily: 'Lucida Console',
             fill: '#FFFFFF',
             stroke: '#000000',
