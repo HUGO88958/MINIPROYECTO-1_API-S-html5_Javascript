@@ -10,6 +10,7 @@ import Records from './scenes/Records.js';
 import Creditos from './scenes/Creditos.js';
 import Instrucciones from './scenes/Instrucciones.js';
 
+
 //  Configuración del juego
 const config = {
     type: Phaser.AUTO,
@@ -70,6 +71,8 @@ class GlobalAudioScene extends Phaser.Scene {
         AudioManager.getInstance(this).create();
     }
 }
+
+
 
 //  Agregar escena de audio global
 game.scene.add('GlobalAudioScene', GlobalAudioScene);

@@ -1,3 +1,5 @@
+
+
 export default class Nivel2 extends Phaser.Scene {
     constructor() {
         super({ key: 'Nivel2' });
@@ -183,16 +185,14 @@ export default class Nivel2 extends Phaser.Scene {
             loop: true
         });
 
+        this.crearBotonPausa();
+
         this.crearBotonSalir();
     }
 
     // Método para crear un recurso especial en una posición específica
     crearEspecial(x, y) {
         const especial = this.especiales.create(x, y, 'especial');
-       
-        
-
-        
     }
 
     // Método para manejar la recolección del recurso especial
@@ -278,6 +278,61 @@ export default class Nivel2 extends Phaser.Scene {
         }
     }
 
+    crearBotonPausa() {
+        const width = this.sys.game.config.width;
+        const height = this.sys.game.config.height;
+        const buttonWidth = 32;
+        const buttonHeight = 32;
+        const margin = 10;
+
+        const pausaButton = this.add.graphics();
+        pausaButton
+            .fillStyle(0x000000, 0.4)
+            .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15)
+            .setDepth(1);
+
+        const container = this.add.container(margin, height - buttonHeight - margin, [pausaButton]);
+        container.setSize(buttonWidth, buttonHeight);
+        container.setInteractive({ useHandCursor: true });
+
+        const iconoPausa = this.add.image(buttonWidth / 2, buttonHeight / 2, 'iconoPausa').setScale(0.5).setDepth(2);
+        const iconoReanudar = this.add.image(buttonWidth / 2, buttonHeight / 2, 'iconoReanudar').setScale(0.5).setDepth(2).setVisible(false);
+
+        container.add(iconoPausa);
+        container.add(iconoReanudar);
+
+        let enPausa = false;
+
+        /*container.on('pointerdown', () => {
+            if (!enPausa) {
+                this.scene.pause(); // Pausar el nivel actual
+                this.scene.launch('EscenaPausa'); // Mostrar la escena de pausa
+                iconoPausa.setVisible(false);
+                iconoReanudar.setVisible(true);
+                enPausa = true;
+            } else {
+                this.scene.resume(); // Reanudar el nivel actual
+                this.scene.stop('EscenaPausa');
+                iconoPausa.setVisible(true);
+                iconoReanudar.setVisible(false);
+                enPausa = false;
+            }
+        });*/
+
+        // Efectos visuales
+        container.on('pointerover', () => {
+            pausaButton.clear()
+                .fillStyle(0xffffff, 0.3)
+                .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+        });
+
+        container.on('pointerout', () => {
+            pausaButton.clear()
+                .fillStyle(0x000000, 0.4)
+                .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+        });
+    }
+
     crearBotonSalir() {
         const width = this.sys.game.config.width;
         const height = this.sys.game.config.height;
@@ -329,6 +384,8 @@ export default class Nivel2 extends Phaser.Scene {
                 .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
         });
     }
+
+
     
 
     // Actualización del juego (se ejecuta en cada frame)
