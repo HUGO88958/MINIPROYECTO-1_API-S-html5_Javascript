@@ -3,7 +3,7 @@ import ElegirPersonaje from './scenes/ElegirPersonaje.js';
 import Nivel1 from './scenes/Nivel1.js';
 import Nivel2 from './scenes/Nivel2.js';
 import GameOver from './scenes/GameOver.js';
-import Presentacion from './scenes/Presentacion.js';
+import Presentacion from './scenes/presentacion.js';
 import MenuPrincipal from './scenes/MenuPrincipal.js';
 import CapturarAlias from './scenes/CapturarAlias.js';
 import Records from './scenes/Records.js';
