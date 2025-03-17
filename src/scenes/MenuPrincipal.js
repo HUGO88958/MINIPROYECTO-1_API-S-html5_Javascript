@@ -4,12 +4,12 @@ export default class MenuPrincipal extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('fondo', 'assets/recursos/fondo_menu.jpeg');
+        this.load.image('fondoM', 'assets/recursos/fondo_menu.jpeg');
     }
 
     create() {
         // Fondo de imagen
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'fondo')
+        this.add.image(this.scale.width / 2, this.scale.height / 2, 'fondoM')
             .setOrigin(0.5)
             .setDisplaySize(this.scale.width, this.scale.height);
 
@@ -39,31 +39,33 @@ export default class MenuPrincipal extends Phaser.Scene {
 
         // Botón para ir a los récords
         const botonRecords = this.add.text(this.scale.width / 2, 270, 'Records', {
-            fontSize: '32px',
-            fill: '#FFFFFF',
-            backgroundColor: '#444',
-            padding: { x: 10, y: 5 },
-            stroke: '#000000',
-            strokeThickness: 2
+        fontSize: '32px',
+        fill: '#FFFFFF',
+        backgroundColor: '#444',
+        padding: { x: 10, y: 5 },
+        stroke: '#000000',
+        strokeThickness: 2
         }).setOrigin(0.5).setInteractive();
 
-        botonRecords.on('pointerdown', () => console.log('Abrir records...'));
-        botonRecords.on('pointerover', () => botonRecords.setStyle({ fill: '#ff0' }));
-        botonRecords.on('pointerout', () => botonRecords.setStyle({ fill: '#fff' }));
+       botonRecords.on('pointerdown', () => this.scene.start('Records'));
+       botonRecords.on('pointerover', () => botonRecords.setStyle({ fill: '#ff0' }));
+       botonRecords.on('pointerout', () => botonRecords.setStyle({ fill: '#fff' }));
 
-// Botón para ir a las instrucciones
-const botonInstrucciones = this.add.text(this.scale.width / 2, 340, 'Instrucciones', {
-    fontSize: '32px',
-    fill: '#FFFFFF',
-    backgroundColor: '#444',
-    padding: { x: 10, y: 5 },
-    stroke: '#000000',
-    strokeThickness: 2
-}).setOrigin(0.5).setInteractive();
 
-botonInstrucciones.on('pointerdown', () => this.scene.start('Instrucciones'));
-botonInstrucciones.on('pointerover', () => botonInstrucciones.setStyle({ fill: '#ff0' }));
-botonInstrucciones.on('pointerout', () => botonInstrucciones.setStyle({ fill: '#fff' }));
+
+       // Botón para ir a las instrucciones
+       const botonInstrucciones = this.add.text(this.scale.width / 2, 340, 'Instrucciones', {
+       fontSize: '32px',
+       fill: '#FFFFFF',
+       backgroundColor: '#444',
+       padding: { x: 10, y: 5 },
+       stroke: '#000000',
+       strokeThickness: 2
+       }).setOrigin(0.5).setInteractive();
+
+       botonInstrucciones.on('pointerdown', () => this.scene.start('Instrucciones'));
+       botonInstrucciones.on('pointerover', () => botonInstrucciones.setStyle({ fill: '#ff0' }));
+       botonInstrucciones.on('pointerout', () => botonInstrucciones.setStyle({ fill: '#fff' }));
 
 
         // Botón para ir a los créditos

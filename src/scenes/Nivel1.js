@@ -6,10 +6,12 @@ export default class Nivel1 extends Phaser.Scene {
 
     // Precarga de recursos
     preload() {
-        this.load.image('fondo', 'assets/fondos/fondo1.png');
+        this.load.image('fondo1', 'assets/fondos/fondo1.png');
         this.load.image('plataforma', 'assets/recursos/plataforma.png');
         this.load.image('estrella', 'assets/recursos/star.png');
         this.load.image('bomba', 'assets/recursos/enemigo.png');
+        this.load.image('iconoPausa', 'assets/recursos/pausa.png');
+        this.load.image('iconoReanudar', 'assets/recursos/reanudar.png');
        
         this.load.spritesheet('spritep1', 'assets/personajes/spritep1.png', {
             frameWidth: 100,
@@ -36,7 +38,7 @@ export default class Nivel1 extends Phaser.Scene {
         this.puntuacion = 0;
         this.gameOver = false;
 
-        const fondo = this.add.image(400, 300, 'fondo');
+        const fondo = this.add.image(400, 300, 'fondo1');
         fondo.setScale(this.sys.game.config.width / fondo.width, this.sys.game.config.height / fondo.height);
 
         this.plataformas = this.physics.add.staticGroup();
@@ -103,6 +105,10 @@ export default class Nivel1 extends Phaser.Scene {
         this.mostrarPuntuacion();
 
         this.cursors = this.input.keyboard.createCursorKeys();
+
+        this.crearBotonPausa();
+        this.crearBotonSalir();
+
     }
     
     crearAnimaciones() {
@@ -118,6 +124,8 @@ export default class Nivel1 extends Phaser.Scene {
             frames: [{ key: this.spritePersonaje, frame: 5 }],
             frameRate: 20
         });
+
+        
     }
 
     update() {
@@ -143,11 +151,11 @@ export default class Nivel1 extends Phaser.Scene {
         if (this.cursors.up.isDown && this.personaje.body.touching.down) {
             if (this.puedeSaltar) {
                 this.personaje.setVelocityY(-360);
-                this.sound.play('sonidoSalto', { volume: 0.5 }); // Reproducir sonido de salto
-                this.puedeSaltar = false; // Evitar que el sonido se repita
+                this.sound.play('sonidoSalto', { volume: 0.5 }); 
+                this.puedeSaltar = false; 
             }
         } else if (!this.cursors.up.isDown && this.personaje.body.touching.down) {
-            this.puedeSaltar = true; // Permitir el sonido en el próximo salto
+            this.puedeSaltar = true; 
         }
 
         this.bombas.children.iterate((bomba) => {
@@ -171,6 +179,175 @@ export default class Nivel1 extends Phaser.Scene {
             }
         });
     }
+
+    crearBotonSalir() {
+        const width = this.sys.game.config.width;
+        const height = this.sys.game.config.height;
+        const buttonWidth = 120; 
+        const buttonHeight = 50; 
+        const margin = 10;
+        const salirButton = this.add.graphics();
+        salirButton
+            .fillStyle(0x000000, 0.4) 
+            .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15) 
+            .setDepth(1);
+
+        const salirTexto = this.add.text(buttonWidth / 2, buttonHeight / 2, 'Salir', {
+            fontSize: '18px',
+            color: '#ffffff',
+            fontFamily: 'Verdana', 
+            fontStyle: 'bold',
+            align: 'center',
+        })
+            .setOrigin(0.5, 0.5) 
+            .setDepth(2);
+    
+        // contenedordel boton
+        const container = this.add.container(width - buttonWidth - margin, height - buttonHeight - margin, [salirButton, salirTexto]);
+        container.setSize(buttonWidth, buttonHeight); 
+        container.setInteractive({ useHandCursor: true }); 
+    
+        // Evento al hacer clic en el botón
+        container.on('pointerdown', () => {
+            this.scene.start('MenuPrincipal'); // Cambiar a la escena del menú principal
+        });
+        
+        container.on('pointerover', () => {
+            salirButton.clear()
+                .fillStyle(0xffffff, 0.3) 
+                .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+        });
+     
+        container.on('pointerout', () => {
+            salirButton.clear()
+                .fillStyle(0x000000, 0.4) 
+                .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+        });
+    }
+
+    crearBotonPausa() {
+        const width = this.sys.game.config.width;
+        const height = this.sys.game.config.height;
+        const buttonWidth = 32; 
+        const buttonHeight = 32; 
+        const margin = 10;
+    
+        const pausaButton = this.add.graphics();
+        pausaButton
+            .fillStyle(0x000000, 0.4) 
+            .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15) 
+            .setDepth(1);
+    
+        //contenedor del botón
+        const container = this.add.container(margin, height - buttonHeight - margin, [pausaButton]);
+        container.setSize(buttonWidth, buttonHeight); 
+        container.setInteractive({ useHandCursor: true });
+    
+        const iconoPausa = this.add.image(buttonWidth / 2, buttonHeight / 2, 'iconoPausa').setScale(0.5).setDepth(2);
+        const iconoReanudar = this.add.image(buttonWidth / 2, buttonHeight / 2, 'iconoReanudar').setScale(0.5).setDepth(2).setVisible(false);
+    
+        //íconos al contenedor
+        container.add(iconoPausa);
+        container.add(iconoReanudar);
+    
+        // Variable estado del juego
+        let enPausa = false;
+    
+        // Creamos una escena superpuesta para manejar la pausa
+        const escenaPausa = this.scene.get('EscenaPausa') || this.scene.add('EscenaPausa', {
+            create: function() {
+                // botón de reanudar 
+                const botonReanudar = this.add.graphics();
+                botonReanudar
+                    .fillStyle(0x000000, 0.4)
+                    .fillRoundedRect(margin, height - buttonHeight - margin, buttonWidth, buttonHeight, 15)
+                    .setDepth(1);
+                
+                const iconoReanudarPausa = this.add.image(
+                    margin + buttonWidth / 2, 
+                    height - buttonHeight - margin + buttonHeight / 2, 
+                    'iconoReanudar'
+                ).setScale(0.5).setDepth(2);
+                
+                const contenedorReanudar = this.add.container(0, 0, [botonReanudar, iconoReanudarPausa]);
+                contenedorReanudar.setSize(buttonWidth, buttonHeight);
+                contenedorReanudar.setPosition(margin, height - buttonHeight - margin);
+                contenedorReanudar.setInteractive({ useHandCursor: true });
+                
+                // Efectos visuales
+                contenedorReanudar.on('pointerover', () => {
+                    botonReanudar.clear()
+                        .fillStyle(0xffffff, 0.3)
+                        .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+                });
+                
+                contenedorReanudar.on('pointerout', () => {
+                    botonReanudar.clear()
+                        .fillStyle(0x000000, 0.4)
+                        .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+                });
+                
+                // Evento de clic para reanudar
+                contenedorReanudar.on('pointerdown', () => {
+                    // Reanudar la escena principal
+                    this.scene.resume('Nivel1');
+                    // Ocultar esta escena
+                    this.scene.setVisible(false);
+                    this.scene.stop();
+                });
+            }
+        }, false);
+        
+        // Escena de pausa inicialmente oculta
+        if (this.scene.get('EscenaPausa')) {
+            this.scene.get('EscenaPausa').scene.setVisible(false);
+            this.scene.get('EscenaPausa').scene.stop();
+        }
+    
+        // Evento de pausa
+        container.on('pointerdown', () => {
+            if (!enPausa) {
+                // Pausar la escena principal
+                this.scene.pause();
+                // Mostrar y activar la escena de pausa
+                escenaPausa.scene.setVisible(true);
+                escenaPausa.scene.start();
+                // Cambiar íconos
+                iconoPausa.setVisible(false);
+                iconoReanudar.setVisible(true);
+                enPausa = true;
+            } else {
+                // Si está en pausa intentar reanudar directamente
+                this.scene.resume();
+                escenaPausa.scene.stop();
+                iconoPausa.setVisible(true);
+                iconoReanudar.setVisible(false);
+                enPausa = false;
+            }
+        });
+    
+        // Escuchar eventos de cambio de estado de la escena
+        this.events.on('resume', () => {
+            iconoPausa.setVisible(true);
+            iconoReanudar.setVisible(false);
+            enPausa = false;
+        });
+    
+        // Efectos
+        container.on('pointerover', () => {
+            pausaButton.clear()
+                .fillStyle(0xffffff, 0.3)
+                .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+        });
+        container.on('pointerout', () => {
+            pausaButton.clear()
+                .fillStyle(0x000000, 0.4) 
+                .fillRoundedRect(0, 0, buttonWidth, buttonHeight, 15);
+        });
+    }
+    
+    
+    
 
     recolectarRecurso(personaje, recurso) {
         recurso.disableBody(true, true);
@@ -279,4 +456,3 @@ export default class Nivel1 extends Phaser.Scene {
         });
     }
 } 
-

@@ -1,10 +1,11 @@
+
 export default class Presentacion extends Phaser.Scene {
     constructor() {
         super({ key: 'Presentacion' });
     }
 
     preload() {
-        this.load.image('fondoInicio', 'assets/recursos/fondo_inicio.jpg'); // Fondo original
+        this.load.image('fondoInicio', 'assets/recursos/fondo_inicio.jpg'); 
         this.load.image('botonInicio', 'assets/recursos/boton_inicio.png'); 
     }
 
@@ -12,7 +13,7 @@ export default class Presentacion extends Phaser.Scene {
         // Mostrar el fondo de pantalla centrado
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'fondoInicio')
             .setOrigin(0.5)
-            .setDisplaySize(this.scale.width, this.scale.height); // Ajusta al tamaño de la ventana
+            .setDisplaySize(this.scale.width, this.scale.height); 
 
         // Nombre del juego
         this.add.text(this.scale.width / 2, 100, 'God of:Reach', {

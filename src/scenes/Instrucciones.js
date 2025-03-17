@@ -13,25 +13,25 @@ export default class Instrucciones extends Phaser.Scene {
 
     create() {
         // Agregar el fondo
-        const fondo = this.add.image(400, 300, 'FondoI').setScale(1.5);
+        const fondo = this.add.image(400, 300, 'FondoI');
 
         // Texto "Instrucciones" con fuente monospace
         this.add.text(400, 50, 'Instrucciones', {
             fontSize: '48px',
             fill: '#FFFFFF',
-            fontFamily: 'monospace', // Fuente monospace
+            fontFamily: 'monospace', 
             fontStyle: 'bold',
-            stroke: '#000000', // Borde negro
-            strokeThickness: 3 // Grosor del borde
+            stroke: '#000000', 
+            strokeThickness: 3 
         }).setOrigin(0.5);
 
         // Texto "Usa las flechas para moverte" con fuente monospace
         this.add.text(400, 150, 'Usa las flechas para moverte', {
             fontSize: '32px',
             fill: '#FFFFFF',
-            fontFamily: 'monospace', // Fuente monospace
-            stroke: '#000000', // Borde negro
-            strokeThickness: 2 // Grosor del borde
+            fontFamily: 'monospace',
+            stroke: '#000000', 
+            strokeThickness: 2 
         }).setOrigin(0.5);
 
         // Imagen "flechas.png" centrada
@@ -41,9 +41,9 @@ export default class Instrucciones extends Phaser.Scene {
         this.add.text(400, 350, 'Usa la flecha de arriba para saltar', {
             fontSize: '32px',
             fill: '#FFFFFF',
-            fontFamily: 'monospace', // Fuente monospace
-            stroke: '#000000', // Borde negrod
-            strokeThickness: 2 // Grosor del borde
+            fontFamily: 'monospace', 
+            stroke: '#000000', 
+            strokeThickness: 2 
         }).setOrigin(0.5);
 
         // Imagen "arriba.png" centrada
@@ -51,12 +51,12 @@ export default class Instrucciones extends Phaser.Scene {
 
         // Botón "Regresar" en la esquina inferior derecha
         const regresarButton = this.add.image(750, 550, 'regresarButton')
-            .setInteractive({ useHandCursor: true }) // Hacer el botón interactivo y cambiar el cursor
-            .setScale(0.5); // Ajustar el tamaño del botón
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.5); 
 
         // Agregar interacción al botón
         regresarButton.on('pointerdown', () => {
-            this.scene.start('MenuPrincipal'); // Cambiar a la escena del menú principal
+            this.scene.start('MenuPrincipal'); 
         });
     }
 }
